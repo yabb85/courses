@@ -1,0 +1,90 @@
+html {
+	height: 100%;
+}
+
+body{
+	margin: 0;
+	padding: 0;
+	line-height: 20px;
+	font-size: 14px;
+	width: 100%;
+	height: 100%;
+}
+
+header {
+	/*position: static;*/
+	background: #101010;
+	min-height: 40px;
+	padding-left: 20px;
+	padding-right: 20px;
+	border-bottom: 2px solid #08C;
+	box-shadow: 0px 2px 4px #aaa;
+}
+
+header:after {
+	clear: both;
+	display: table;
+	content: "";
+	line-height: 0px;
+}
+
+.container {
+	width: 940px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.container .brand {
+	color: #DDD;
+	font-size: 32px;
+	float: left;
+	padding: 21px 20px 0px 0px;
+	text-decoration: none;
+}
+
+.menu {
+	float: right;
+	margin: 0px 10px 0px 0px;
+	list-style: none outside none;
+}
+
+nav .menu > li {
+	float: left;
+}
+
+nav .menu > li > a {
+	float: none;
+	padding: 18px 20px;
+	text-decoration: none;
+	display: block;
+	color: #08C;
+}
+
+article {
+	width: 900px;
+	height: 100%;
+	margin-right: auto;
+	margin-left: auto;
+	padding: 20px;
+	box-shadow: 1px 0px 4px #aaa;
+	background-color: #FBFBFB;
+}
+
+h1 {
+}
+
+li {
+	line-height: 20px;
+}
+
+.produit {
+	display: inline-block;
+	padding: 18px 20px;
+	text-decoration: none;
+	border: 1px solid red;
+	width: 50px;
+	color: green;
+	margin: 5px 0px 5px 0px;
+	cursor: pointer;
+}
+

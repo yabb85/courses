@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<link href="{{ url_for('static', filename='mon_style.css') }}" rel="stylesheet" type="text/css" />
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Courses</title>
+    </head>
+    <body>
+		<header>
+			<div class=container>
+				<a href="" class="brand">Course</a>
+				<nav>
+					<ul class="menu">
+						<li>
+							<a href="/liste/">liste</a>
+						</li>
+						<li>
+							<a href="/produits/">produits</a>
+						</li>
+						{% if pseudo is defined %}
+							<li>
+							<a href="/profil/">{{ pseudo }}</a>
+							</li>
+							<li>
+								<a href="/deconnexion/">deconnexion</a>
+							</li>
+						{% endif %}
+					</ul>
+				</nav>
+			</div>
+		</header>
+    </body>
+</html>
