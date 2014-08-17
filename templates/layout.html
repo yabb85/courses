@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<link href="{{ url_for('static', filename='mon_style.css') }}" rel="stylesheet" type="text/css" />
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Courses</title>
+		<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script src="{{ url_for('static', filename='autobahn.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='script.js') }}"></script>
+    </head>
+    <body>
+		<header>
+			<div class=container>
+				<a href="" class="brand">Course</a>
+				<nav>
+					<ul class="menu">
+						<li>
+							<a href="/liste/">liste</a>
+						</li>
+						{% if pseudo is defined %}
+							<li>
+							<a href="/profil/">{{ pseudo }}</a>
+							</li>
+							<li>
+								<a href="/logout/">deconnexion</a>
+							</li>
+						{% else %}
+							<li>
+								<a href="/login/">connexion</a>
+							</li>
+						{% endif %}
+					</ul>
+				</nav>
+			</div>
+		</header>
+		<article>
+			{% block content %}
+			{% endblock %}
+		</article>
+    </body>
+</html>
+
