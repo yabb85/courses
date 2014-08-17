@@ -12,9 +12,6 @@ from flask.ext.login import LoginManager
 from flask.ext.login import login_required
 from flask.ext.login import login_user
 from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
@@ -22,31 +19,23 @@ from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'gjbd iud,hghb nux, b'
-app.config['SQLALCHEMY_DATABASE_URL'] = \
+app.config['SQLALCHEMY_DATABASE_URI'] = \
     'postgresql://disciple:lolo@localhost:5432/disciplebase'
 
 
-engine = create_engine('postgresql://disciple:lolo@localhost:5432/disciplebase',
-                       convert_unicode=True)
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
-Base = declarative_base()
-Base.query = db_session.query_property()
-
-# db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 
-class User(Base):
+class User(db.Model):
     __tablename__ = "users"
     id = Column('id', Integer, primary_key=True)
-    username = Column('name', String(15))
+    username = Column('name', String(15), unique=True)
     password = Column('password', String(50))
-    email = Column('mail', String(50))
+    email = Column('mail', String(50), unique=True)
 
     def __init__(self, username, password, email):
         self.username = username
@@ -94,8 +83,8 @@ def register():
         return render_template('register.html')
     user = User(request.form['username'], request.form['password'],
                 request.form['mail'])
-    db_session.add(user)
-    db_session.commit()
+    db.session.add(user)
+    db.session.commit()
     return redirect(url_for('login'))
 
 
@@ -104,11 +93,10 @@ def login():
     if request.method == 'GET':
         return render_template('login.html', titre='login')
     else:
-        # username = request.form['login']
-        # password = request.form['password']
-        # registered_user = User.query.filter_by(username=username,
-        # password=password).first()
-        registered_user = User.query.all()
+        username = request.form['login']
+        password = request.form['password']
+        registered_user = User.query.filter_by(username=username,
+                                               password=password).first()
         if registered_user is None:
             return render_template('login.html', titre='login')
         login_user(registered_user)
@@ -125,12 +113,12 @@ def logout():
 @app.route('/profil/')
 @login_required
 def profil():
-    return render_template('profil.html')
+    return render_template('profil.html', titre='profil')
 
 
 @app.route('/produits/')
 def produits():
-    return render_template('produits.html')
+    return render_template('produits.html', titre='produit')
 
 
 @app.route('/liste/')
@@ -154,5 +142,4 @@ def load_user(id):
 
 
 if __name__ == '__main__':
-    db_session.commit()
     app.run(debug=True)
