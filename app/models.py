@@ -41,3 +41,17 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
+
+class Liste(db.Model):
+    __tablename__ = "list"
+    id = Column('id', Integer, primary_key=True)
+    name = Column('name', String(50))
+
+    def __init__(self, name):
+        """docstring for __init__"""
+        self.name = name
+
+    def __repr__(self):
+        """docstring for __repr__"""
+        return '<Liste %r>' % self.name
