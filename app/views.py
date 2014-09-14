@@ -1,71 +1,25 @@
 #! /usr/bin/python
 # -*- coding:utf-8 -*-
 
-from datetime import datetime
-from flask import Flask
-from flask import render_template
+from app import app
+from app import db
 from flask import redirect
-from flask import url_for
 from flask import request
+from flask import render_template
+from flask import url_for
 from flask import flash
 from flask import g
+from flask.ext.login import current_user
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required
 from flask.ext.login import login_user
 from flask.ext.login import logout_user
-from flask.ext.login import current_user
-from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String
-from werkzeug.security import generate_password_hash
-from werkzeug.security import check_password_hash
+from models import User
 
-
-app = Flask(__name__)
-app.secret_key = 'gjbd iud,hghb nux, b'
-app.config['SQLALCHEMY_DATABASE_URI'] = \
-    'postgresql://disciple:lolo@localhost:5432/disciplebase'
-
-
-db = SQLAlchemy(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-
-
-class User(db.Model):
-    __tablename__ = "users"
-    id = Column('id', Integer, primary_key=True)
-    username = Column('name', String(15), unique=True)
-    password = Column('password', String(50))
-    email = Column('mail', String(50), unique=True)
-
-    def __init__(self, username, password, email):
-        self.username = username
-        self.password = password
-        self.email = email
-        self.registered_on = datetime.utcnow()
-
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
-
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return unicode(self.id)
-
-    def __repr__(self):
-        return '<User %r>' % self.username
 
 
 @app.route('/')
@@ -120,6 +74,10 @@ def login():
 @app.route('/logout/')
 @login_required
 def logout():
+    """
+    Logout de l'utilisateur
+    detruit la session créé et redirige vers la page login
+    """
     logout_user()
     return redirect(url_for('login'))
 
@@ -127,6 +85,9 @@ def logout():
 @app.route('/profil/')
 @login_required
 def profil():
+    """
+    Affiche la page de profil
+    """
     return render_template('profil.html', titre='profil')
 
 
@@ -139,6 +100,9 @@ def produits():
 @app.route('/liste/<id_liste>')
 @login_required
 def liste(id_liste=''):
+    """
+    Affiche la liste de course
+    """
     produits = ["sucre", "farine", "sel", "salade", "chou", "chocolat"]
     return render_template('liste.html', produits=produits, titre=id_liste)
 
@@ -151,7 +115,3 @@ def before_request():
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
