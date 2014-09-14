@@ -17,9 +17,9 @@
 						<li>
 							<a href="/liste/">liste</a>
 						</li>
-						{% if pseudo is defined %}
+						{% if g.user.is_authenticated() %}
 							<li>
-							<a href="/profil/">{{ pseudo }}</a>
+							<a href="/profil/">{{ g.user.username }}</a>
 							</li>
 							<li>
 								<a href="/logout/">deconnexion</a>
