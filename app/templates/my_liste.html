@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+	<h1>{{ titre }}</h1>
+	<ul>
+	{% for produit in produits %}
+	<li class="produit" id="{{ produit }}" onclick="addProduct(this.id, '{{ titre }}')">{{ produit }}</li>
+	{% endfor %}
+	</ul>
+
+	<ul id="liste">
+	</ul>
+{% endblock %}

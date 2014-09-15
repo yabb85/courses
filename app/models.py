@@ -2,7 +2,10 @@
 # -*- coding:utf-8 -*-
 
 from app import db
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column
+from sqlalchemy import Integer, String, Numeric
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship, backref
 from datetime import datetime
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
@@ -55,3 +58,39 @@ class Liste(db.Model):
     def __repr__(self):
         """docstring for __repr__"""
         return '<Liste %r>' % self.name
+
+
+class UserList(db.Model):
+    __tablename__ = 'user_list'
+    user_id = Column('user_id', Integer, primary_key=True)
+    list_id = Column('list_id', Integer, primary_key=True)
+
+    def __init__(self, user_id, list_id):
+        """docstring for __init__"""
+        self.user_id = user_id
+        self.list_id = list_id
+
+    def __repr__(self):
+        """docstring for __repr__"""
+        return '<User List %r %r>' % (self.user_id, self.list_id)
+
+
+class Product(db.Model):
+    __tablename__ = "products"
+    id = Column('id', Integer, primary_key=True)
+    name = Column('name', String(50))
+    price = Column('price', Numeric)
+    quantity = Column('quantity', Integer)
+    unit = Column('unit', String(10))
+    img = Column('img', String(200))
+
+    def __init__(self, name, price, quantity, unit, img):
+        """docstring for __init__"""
+        self.name = name
+        self.price = price
+        self.quantity = quantity
+        self.unit = unit
+        self.img = img
+
+    def __repr__(self):
+        return '<Product %r>' % self.name

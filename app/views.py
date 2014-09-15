@@ -15,6 +15,9 @@ from flask.ext.login import login_required
 from flask.ext.login import login_user
 from flask.ext.login import logout_user
 from models import User
+from models import UserList
+from models import Liste
+from models import Product
 
 
 login_manager = LoginManager()
@@ -97,14 +100,27 @@ def produits():
 
 
 @app.route('/liste/')
+def list():
+    """
+    Affiche l'ensemble des liste de course de l'utilisateur
+    """
+    results = UserList.query.filter_by(user_id=g.user.id)
+    listes = []
+    for el in results:
+        listes.append(Liste.query.filter_by(id=el.list_id).first())
+    return render_template('liste.html', liste=listes)
+
+
 @app.route('/liste/<id_liste>')
 @login_required
-def liste(id_liste=''):
+def my_liste(id_liste=''):
     """
     Affiche la liste de course
     """
-    produits = ["sucre", "farine", "sel", "salade", "chou", "chocolat"]
-    return render_template('liste.html', produits=produits, titre=id_liste)
+    name = Liste.query.filter_by(id=id_liste).first().name
+    #produits = ["sucre", "farine", "sel", "salade", "chou", "chocolat"]
+    produits = Product.query.all()
+    return render_template('my_liste.html', produits=produits, titre=name)
 
 
 @app.before_request
