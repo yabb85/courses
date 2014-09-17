@@ -88,3 +88,18 @@ li {
 	cursor: pointer;
 }
 
+#newliste {
+	padding: 10px;
+	padding-left: 30px;
+	color: #000;
+	background-color: #CCCCCC;
+	box-shadow: 1px 0px 4px #DDD;
+	border-radius: 5px;
+	text-align: center;
+}
+
+input {
+	height: 20px;
+	border: 1px solid  #AAA;
+	border-radius: 6px;
+}

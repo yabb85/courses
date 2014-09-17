@@ -1,8 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
 	<h1>{{ titre }}</h1>
-	<div>
-		new liste
+	<div id="newliste">
+		<form action="/addlist/" method="post">
+			Nouvelle liste : <input type="text" name="name">
+			<input type="submit" value="Creer">
+		</form>
 	</div>
 	<h2> liste:</h2>
 	<ul>

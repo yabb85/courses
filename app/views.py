@@ -100,6 +100,7 @@ def produits():
 
 
 @app.route('/liste/')
+@login_required
 def list():
     """
     Affiche l'ensemble des liste de course de l'utilisateur
@@ -118,9 +119,31 @@ def my_liste(id_liste=''):
     Affiche la liste de course
     """
     name = Liste.query.filter_by(id=id_liste).first().name
-    #produits = ["sucre", "farine", "sel", "salade", "chou", "chocolat"]
+    # produits = ["sucre", "farine", "sel", "salade", "chou", "chocolat"]
     produits = Product.query.all()
-    return render_template('my_liste.html', produits=produits, titre=name)
+    return render_template('my_liste.html', produits=produits, titre=name,
+                           id=id_liste)
+
+
+@app.route('/addlist/', methods=['POST'])
+def add_liste():
+    liste = Liste(request.form['name'])
+    db.session.add(liste)
+    db.session.commit()
+    list_user = UserList(g.user.id, liste.id)
+    db.session.add(list_user)
+    db.session.commit()
+    return redirect('/liste/')
+
+
+@app.route('/addproduct/', methods=['POST'])
+def add_product():
+    product = Product(request.form['name'], request.form['price'],
+                      request.form['quantity'], request.form['unit'],
+                      request.form['img'])
+    db.session.add(product)
+    db.session.commit()
+    return redirect(request.args.get('next') or url_for('list'))
 
 
 @app.before_request

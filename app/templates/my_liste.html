@@ -1,9 +1,17 @@
 {% extends "layout.html" %}
 {% block content %}
 	<h1>{{ titre }}</h1>
+	<form action="/addproduct/?next=/liste/{{ id }}" method="post">
+		Nom: <input type="text" name="name">
+		Prix: <input type="text" name="price">
+		Quantité: <input type="text" name="quantity">
+		Unité: <input type="text" name="unit">
+		Image: <input type="text" name="img">
+		<input type="submit" value="Creer">
+	</form>
 	<ul>
 	{% for produit in produits %}
-	<li class="produit" id="{{ produit }}" onclick="addProduct(this.id, '{{ titre }}')">{{ produit }}</li>
+	<li class="produit" id="{{ produit }}" onclick="addProduct(this.id, '{{ titre }}')">{{ produit.name }}</li>
 	{% endfor %}
 	</ul>
 
