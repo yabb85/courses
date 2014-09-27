@@ -9,12 +9,16 @@
 		Image: <input type="text" name="img">
 		<input type="submit" value="Creer">
 	</form>
-	<ul>
-	{% for produit in produits %}
-	<li class="produit" id="{{ produit }}" onclick="addProduct(this.id, '{{ titre }}')">{{ produit.name }}</li>
-	{% endfor %}
-	</ul>
-
+	<aside>
+		<ul id="list_prod">
+			{% for produit in produits %}
+			<li class="produit" id="{{ produit.id }}" onclick="addProduct(this.id, '{{ id }}', '{{produit.name}}')">{{ produit.name }}</li>
+			{% endfor %}
+		</ul>
+	</aside>
 	<ul id="liste">
+		{% for achat in achats %}
+		<li class="produit" id="{{ achat.Product.id }}" onclick="removeProduct(this.id, '{{ id }}')">{{ achat.Product.name }}</li>
+		{% endfor %}
 	</ul>
 {% endblock %}

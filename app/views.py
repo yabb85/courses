@@ -18,6 +18,7 @@ from models import User
 from models import UserList
 from models import Liste
 from models import Product
+from models import ListProduct
 
 
 login_manager = LoginManager()
@@ -94,11 +95,6 @@ def profil():
     return render_template('profil.html', titre='profil')
 
 
-@app.route('/produits/')
-def produits():
-    return render_template('produits.html', titre='produit')
-
-
 @app.route('/liste/')
 @login_required
 def list():
@@ -112,21 +108,24 @@ def list():
     return render_template('liste.html', liste=listes)
 
 
-@app.route('/liste/<id_liste>')
+@app.route('/liste/<id_list>')
 @login_required
-def my_liste(id_liste=''):
+def my_liste(id_list=''):
     """
     Affiche la liste de course
     """
-    name = Liste.query.filter_by(id=id_liste).first().name
-    # produits = ["sucre", "farine", "sel", "salade", "chou", "chocolat"]
+    name = Liste.query.filter_by(id=id_list).first().name
     produits = Product.query.all()
+    list_prod = db.session.query(ListProduct, Product).filter(ListProduct.list_id==id_list).join(Product, ListProduct.product_id==Product.id)
     return render_template('my_liste.html', produits=produits, titre=name,
-                           id=id_liste)
+                           id=id_list, achats=list_prod)
 
 
 @app.route('/addlist/', methods=['POST'])
 def add_liste():
+    """
+    Creer une nouvelle liste pour l'utilisateur courant
+    """
     liste = Liste(request.form['name'])
     db.session.add(liste)
     db.session.commit()
@@ -138,6 +137,9 @@ def add_liste():
 
 @app.route('/addproduct/', methods=['POST'])
 def add_product():
+    """
+    N'affiche pas de page mais ajoute un produit apres remplissage du formulaire
+    """
     product = Product(request.form['name'], request.form['price'],
                       request.form['quantity'], request.form['unit'],
                       request.form['img'])

@@ -94,3 +94,20 @@ class Product(db.Model):
 
     def __repr__(self):
         return '<Product %r>' % self.name
+
+
+class ListProduct(db.Model):
+    __tablename__ = "list_product"
+    list_id = Column('list_id', Integer, primary_key=True)
+    product_id = Column('product_id', Integer, primary_key=True)
+    quantity = Column('quantity', Integer)
+
+    def __init__(self, list_id, product_id, quantity):
+        """docstring for __init__"""
+        self.list_id = list_id
+        self.product_id = product_id
+        self.quantity = quantity
+
+    def __repr__(self):
+        """docstring for __repr__"""
+        return '<ListProduct %r %r %r>' % (self.list_id, self.product_id, self.quantity)
