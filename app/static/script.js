@@ -6,6 +6,8 @@ var connection = new autobahn.Connection({
 	realm: "realm1"
 });
 
+var unfolded = false;
+
 connection.onopen = function (session) {
 	console.log("connected");
 
@@ -37,7 +39,8 @@ connection.onopen = function (session) {
 				console.log('impossible to remove product in list');
 			}		
 		);
-	}	
+	}
+
 };
 
 connection.open();
@@ -55,4 +58,13 @@ function removeProduct(product, list_id) {
 	if(connection.session) {
 		removeToList(product, list_id);
 	}
+};
+
+function unfold() {
+	if(unfolded) {
+		$('#form_add_product').css("display", "none");
+	} else {
+		$('#form_add_product').css("display", "block");
+	}
+	unfolded = !unfolded;
 };

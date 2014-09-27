@@ -82,6 +82,7 @@ li {
 	padding: 18px 20px;
 	text-decoration: none;
 	border: 1px solid red;
+	border-radius: 6px;
 	width: 40px;
 	color: green;
 	margin: 5px 0px 5px 0px;
@@ -114,4 +115,29 @@ aside {
 
 #list_prod {
 	padding: 0px 10px 0px 10px;
+}
+
+#form {
+	background-color: #08C;
+	color: white;
+	border-radius: 6px;
+}
+
+#form_add_product {
+	display: none;
+	margin-left: 10px;
+}
+
+#button_add {
+	margin-left: 20px;
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+}
+
+label {
+	display: block;
+	width: 100px;
+	float: left;
 }
