@@ -1,5 +1,5 @@
-var toto = window.location.pathname.split('/');
-var toto = toto[toto.length-1];
+var id_list = window.location.pathname.split('/');
+var id_list = id_list[id_list.length-1];
 
 var connection = new autobahn.Connection({
 	url: "ws://127.0.0.1:8080/ws",
@@ -7,6 +7,7 @@ var connection = new autobahn.Connection({
 });
 
 var unfolded = false;
+
 
 connection.onopen = function (session) {
 	console.log("connected");
@@ -41,10 +42,19 @@ connection.onopen = function (session) {
 		);
 	}
 
+	newProduct = function(name, price, quantity, unit, img) {
+		session.call('me.hory.create_product', [name, price, quantity, unit, img]).then(
+			function(res) {
+				console.log('product created');
+			},
+			function(error) {
+				console.log('impossible to create product');
+			}
+		);
+	}
 };
 
 connection.open();
-
 
 function addProduct(product, list_id, name) {
 	//$('#liste').append('<li>'+product+'</li>');
@@ -61,10 +71,10 @@ function removeProduct(product, list_id) {
 };
 
 function unfold() {
-	if(unfolded) {
-		$('#form_add_product').css("display", "none");
-	} else {
+	if($('#form_add_product').css('display') == "none") {
 		$('#form_add_product').css("display", "block");
+	} else {
+		$('#form_add_product').css("display", "none");
 	}
 	unfolded = !unfolded;
 };

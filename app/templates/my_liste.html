@@ -3,19 +3,22 @@
 	<h1>{{ titre }}</h1>
 	<div id="form">
 		<img id="button_add" src="" alt="toto" onclick="unfold();"></img>
-		<form id="form_add_product" action="/addproduct/?next=/liste/{{ id }}" method="post">
-			<label for="name">Nom:</label><input type="text" name="name"><br />
-			<label for="price">Prix:</label><input type="text" name="price"><br />
-			<label for="quantity">Quantité:</label><input type="text" name="quantity"><br />
-			<label for="unit">Unité:</label><input type="text" name="unit"><br />
-			<label for="img">Image:</label><input type="text" name="img"><br />
-			<input type="submit" value="Creer"><br />
+		<form id="form_add_product">
+			<label for="name">Nom:</label><input type="text" name="name" id="name"><br />
+			<label for="price">Prix:</label><input type="text" name="price" id="price"><br />
+			<label for="quantity">Quantité:</label><input type="text" name="quantity" id="quantity"><br />
+			<label for="unit">Unité:</label><input type="text" name="unit" id="unit"><br />
+			<label for="img">Image:</label><input type="text" name="img" id="img"><br />
+			<input type="button" value="Creer" onclick="createProduct()"><br />
 		</form>
 	</div>
 	<aside>
 		<ul id="list_prod">
 			{% for produit in produits %}
-			<li class="produit" id="{{ produit.id }}" onclick="addProduct(this.id, '{{ id }}', '{{produit.name}}')"><img src="{{ produit.img }}" alt="{{ produit.name }}" /></li>
+			<li class="produit" id="{{ produit.id }}" onclick="addProduct(this.id, '{{ id }}', '{{produit.name}}')">
+				<img class="img_prod" src="{{ produit.img }}" alt="{{ produit.name }}" />
+				<img class="unfold" src="" alt="x" />
+			</li>
 			{% endfor %}
 		</ul>
 	</aside>
@@ -24,4 +27,5 @@
 		<li class="produit" id="{{ achat.Product.id }}" onclick="removeProduct(this.id, '{{ id }}')"><img src="{{ achat.Product.img }}" alt="{{ achat.Product.name }}" /></li>
 		{% endfor %}
 	</ul>
+	<script src="{{ url_for('static', filename='my_list.js') }}"></script>
 {% endblock %}
