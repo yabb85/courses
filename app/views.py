@@ -108,7 +108,7 @@ def list():
     return render_template('liste.html', liste=listes)
 
 
-@app.route('/liste/<id_list>')
+@app.route('/liste/<int:id_list>')
 @login_required
 def my_liste(id_list=''):
     """
@@ -116,9 +116,11 @@ def my_liste(id_list=''):
     """
     name = Liste.query.filter_by(id=id_list).first().name
     produits = Product.query.all()
-    list_prod = db.session.query(ListProduct, Product).filter(ListProduct.list_id==id_list).join(Product, ListProduct.product_id==Product.id)
+    list_prod = db.session.query(ListProduct, Product).filter(
+        ListProduct.list_id == id_list).join(Product, ListProduct.product_id ==
+                                             Product.id)
     return render_template('my_liste.html', produits=produits, titre=name,
-                           id=id_list, achats=list_prod)
+                           number=id_list, achats=list_prod)
 
 
 @app.route('/addlist/', methods=['POST'])

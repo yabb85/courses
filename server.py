@@ -17,13 +17,21 @@ def _():
 
 @wamp.register()
 def add_to_list(product, liste, name):
-    # ajoute un produit dans la liste
-    lp = ListProduct(liste, product, 1)
-    db.session.add(lp)
+    result = ListProduct.query.filter_by(list_id=liste,
+                                         product_id=product).first()
+    number = 1
+    if result is not None:
+        # update le nombre de produit
+        number = int(result.quantity) + 1
+        result.quantity = number
+    else:
+        # ajoute un produit dans la liste
+        lp = ListProduct(liste, product, number)
+        db.session.add(lp)
     db.session.commit()
-    # faire la partie pour ajouter une quantité si le produit est deja dans la
-    # liste
-    wamp.session.publish('refresh_add_product', product, liste, name)
+    prod = Product.query.filter_by(id=product).first()
+    wamp.session.publish('refresh_add_product', product, liste, name, prod.img,
+                         number)
 
 
 @wamp.register()
@@ -31,6 +39,7 @@ def remove_to_list(product, liste):
     ListProduct.query.filter_by(list_id=liste, product_id=product).delete()
     db.session.commit()
     wamp.session.publish('refresh_remove_product', [product])
+
 
 @wamp.register()
 def create_product(name, price, quantity, unit, img):

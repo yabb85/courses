@@ -87,6 +87,46 @@ li {
 	color: green;
 	margin: 5px 0px 5px 0px;
 	cursor: pointer;
+	text-align: center;
+}
+
+.achat {
+	display: inline-block;
+	text-decoration: none;
+	border: 1px solid red;
+	border-radius: 6px;
+	width: 80px;
+	height: 70px;
+	color: black;
+	margin: 5px 0px 5px 0px;
+	cursor: pointer;
+	text-align: right;
+}
+
+.img_prod {
+	/*display: inline-block;*/
+	display: block;
+	margin: 0px;
+	padding: 0px;
+	width: 80px;
+	height: 70px;
+	border-radius: 6px;
+}
+
+.img_achat {
+	/*display: inline-block;*/
+	display: block;
+	margin: 0px;
+	padding: 0px;
+	width: 80px;
+	height: 70px;
+	border-radius: 6px;
+}
+
+.count_achat {
+	position: relative;
+	top: -20px;
+	right: 5px;
 }
 
 #newliste {
@@ -150,14 +190,9 @@ label {
 	width: 20px;
 	height: 20px;
 	background-color: blue;
+	color: #EEE;
 	margin: 0;
 	padding: 0;
-}
-
-.img_prod {
-	display: block;
-	margin: 0px;
-	padding: 0px;
-	width: 80px;
-	height: 70px;
+	border-bottom-right-radius: 6px;
+	border-top-left-radius: 4px;
 }

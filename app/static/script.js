@@ -12,8 +12,13 @@ var unfolded = false;
 connection.onopen = function (session) {
 	console.log("connected");
 
-	session.subscribe('refresh_add_product', function(prod, liste) {
-		$('#liste').append('<li class="produit" id="'+prod[0]+'" onclick=removeProduct('+prod[0]+','+prod[1]+')>'+prod[2]+'</li>');
+	session.subscribe('refresh_add_product', function(prod) {
+		var li = $('#liste').find('li#'+prod[0])
+		if(li.size()) {
+			li.find("span").html(prod[4]);
+		}else{
+			$('#liste').append('<li class="achat" id="'+prod[0]+'" onclick=removeProduct('+prod[0]+','+prod[1]+')><img class="img_achat" src="/static/'+prod[3]+'" alt="'+prod[2]+'"/><span class="count_achat">'+prod[4]+'</span></li>');
+		}
 	});
 
 	session.subscribe('refresh_remove_product', function(prod) {

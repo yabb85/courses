@@ -15,16 +15,19 @@
 	<aside>
 		<ul id="list_prod">
 			{% for produit in produits %}
-			<li class="produit" id="{{ produit.id }}" onclick="addProduct(this.id, '{{ id }}', '{{produit.name}}')">
-				<img class="img_prod" src="{{ produit.img }}" alt="{{ produit.name }}" />
-				<img class="unfold" src="" alt="x" />
+			<li class="produit" id="{{ produit.id }}" onclick="addProduct(this.id, '{{ number }}', '{{produit.name}}')">
+				<img class="img_prod" src="{{ url_for('static', filename=produit.img) }}" alt="{{ produit.name }}" />
+				<img class="unfold" src="" alt="&#x271A" />
 			</li>
 			{% endfor %}
 		</ul>
 	</aside>
 	<ul id="liste">
 		{% for achat in achats %}
-		<li class="produit" id="{{ achat.Product.id }}" onclick="removeProduct(this.id, '{{ id }}')"><img src="{{ achat.Product.img }}" alt="{{ achat.Product.name }}" /></li>
+		<li class="achat" id="{{ achat.Product.id }}" onclick="removeProduct(this.id, '{{ number }}')">
+			<img class="img_achat" src="{{ url_for('static', filename=achat.Product.img) }}" alt="{{ achat.Product.name }}" />
+			<span class="count_achat">{{ achat.ListProduct.quantity }}</span>
+		</li>
 		{% endfor %}
 	</ul>
 	<script src="{{ url_for('static', filename='my_list.js') }}"></script>
