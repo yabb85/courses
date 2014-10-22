@@ -1,34 +1,44 @@
 {% extends "layout.html" %}
 {% block content %}
+	<script>
+		var id_list = {{ number }};
+	</script>
 	<h1>{{ titre }}</h1>
-	<div id="form">
+	<div id="form" class="col-md-12">
 		<img id="button_add" src="" alt="toto" onclick="unfold();"></img>
-		<form id="form_add_product">
-			<label for="name">Nom:</label><input type="text" name="name" id="name"><br />
-			<label for="price">Prix:</label><input type="text" name="price" id="price"><br />
-			<label for="quantity">Quantité:</label><input type="text" name="quantity" id="quantity"><br />
-			<label for="unit">Unité:</label><input type="text" name="unit" id="unit"><br />
-			<label for="img">Image:</label><input type="text" name="img" id="img"><br />
-			<input type="button" value="Creer" onclick="createProduct()"><br />
+		<form id="form_add_product" class="form-group">
+			<label for="name">Nom:</label>
+			<input type="text" name="name" id="name" class="form-control">
+			<label for="price">Prix:</label>
+			<input type="text" name="price" id="price" class="form-control">
+			<label for="quantity">Quantité:</label>
+			<input type="text" name="quantity" id="quantity" class="form-control">
+			<label for="unit">Unité:</label>
+			<input type="text" name="unit" id="unit" class="form-control">
+			<label for="img">Image:</label>
+			<input type="text" name="img" id="img" class="form-control">
+			<input type="button" value="Creer" onclick="createProduct()">
 		</form>
 	</div>
-	<aside>
-		<ul id="list_prod">
+	<div class="col-md-6">
+		<ul id="liste" class="list-group">
+			{% for achat in achats %}
+			<li class="list-group-item panier" id="{{ achat.Product.id }}">
+			    {{ achat.Product.name }}	
+				<span class="badge">{{ achat.ListProduct.quantity }}</span>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+	<div class="col-md-6">
+		<ul id="list_prod" class="list-group">
 			{% for produit in produits %}
-			<li class="produit" id="{{ produit.id }}" onclick="addProduct(this.id, '{{ number }}', '{{produit.name}}')">
-				<img class="img_prod" src="{{ url_for('static', filename=produit.img) }}" alt="{{ produit.name }}" />
+			<li class="list-group-item achat" id="{{ produit.id }}">
+				{{ produit.name }}
 				<img class="unfold" src="" alt="&#x271A" />
 			</li>
 			{% endfor %}
 		</ul>
-	</aside>
-	<ul id="liste">
-		{% for achat in achats %}
-		<li class="achat" id="{{ achat.Product.id }}" onclick="removeProduct(this.id, '{{ number }}')">
-			<img class="img_achat" src="{{ url_for('static', filename=achat.Product.img) }}" alt="{{ achat.Product.name }}" />
-			<span class="count_achat">{{ achat.ListProduct.quantity }}</span>
-		</li>
-		{% endfor %}
-	</ul>
+	</div>
 	<script src="{{ url_for('static', filename='my_list.js') }}"></script>
 {% endblock %}

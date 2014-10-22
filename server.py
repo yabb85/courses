@@ -16,7 +16,7 @@ def _():
 
 
 @wamp.register()
-def add_to_list(product, liste, name):
+def add_to_list(product, liste):
     result = ListProduct.query.filter_by(list_id=liste,
                                          product_id=product).first()
     number = 1
@@ -30,8 +30,8 @@ def add_to_list(product, liste, name):
         db.session.add(lp)
     db.session.commit()
     prod = Product.query.filter_by(id=product).first()
-    wamp.session.publish('refresh_add_product', product, liste, name, prod.img,
-                         number)
+    wamp.session.publish('refresh_add_product', product, liste, prod.name,
+                         prod.img, number)
 
 
 @wamp.register()
