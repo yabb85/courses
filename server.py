@@ -45,10 +45,9 @@ def remove_to_list(product, liste):
 def create_product(name, price, quantity, unit, img):
     """docstring for create_product"""
     product = Product(name, price, quantity, unit, img)
-    print product
     db.session.add(product)
     db.session.commit()
-    # travailler l'affichage dynamique lors d'un ajout
+    wamp.session.publish('refresh_create_product', product.id, product.name)
 
 if __name__ == '__main__':
     wamp.run(url='ws://127.0.0.1:8080/ws')

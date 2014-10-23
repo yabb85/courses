@@ -26,30 +26,12 @@ $(function() {
 			$('#liste #'+prod).remove();
 		});
 
-		removeToList = function(product, liste) {
-			session.call('me.hory.remove_to_list', [product, liste]).then(
-				function(res){
-					console.log('product removed to list');
-				},
-				function(error){
-					console.log('impossible to remove product in list');
-				}		
-			);
-		}
-
-		newProduct = function(name, price, quantity, unit, img) {
-			session.call('me.hory.create_product', [name, price, quantity, unit, img]).then(
-				function(res) {
-					console.log('product created');
-				},
-				function(error) {
-					console.log('impossible to create product');
-				}
-			);
-		}
+		session.subscribe('refresh_create_product', function(prod) {
+			$('#list_prod').append('<li class="list-group-item achat" id="'+prod[0]+'">'+prod[1]+'<img class="unfold" src="" alt="&#x271A" /></li>')
+		});
 	};
 
-
+	// remove product of cart
 	$('#liste').on("click", ".panier", function() {
 		if (connection.session) {
 			connection.session.call('me.hory.remove_to_list', [this.id, id_list]).then(
@@ -58,13 +40,14 @@ $(function() {
 				},
 				function(error){
 					console.log('impossible to remove product in list');
-				}		
+				}
 			);
 		}
 	});
 
 
-	$('.achat').click(function() {
+	// add an article to cart
+	$('#list_prod').on('click', '.achat', function() {
 		if (connection.session) {
 			connection.session.call('me.hory.add_to_list', [this.id, id_list]).then(
 				function(res){
@@ -72,12 +55,12 @@ $(function() {
 				},
 				function(error){
 					console.log('impossible to add product in list');
-				}		
+				}
 			);
 		}
 	});
 
-
+	//unfold form to create product
 	$('#button_add').click(function() {
 		if($('#form_add_product').css('display') == "none") {
 			$('#form_add_product').css("display", "block");
@@ -87,6 +70,24 @@ $(function() {
 		unfolded = !unfolded;
 	});
 
+	//create a new product
+	$('#create').click(function() {
+		if(connection.session) {
+			var name = $('#name').val();
+			var price = $('#price').val();
+			var quantity = $('#quantity').val();
+			var unit = $('#unit').val();
+			var img = $('#img').val();
+			connection.session.call('me.hory.create_product', [name, price, quantity, unit, img]).then(
+				function(res) {
+					console.log('product created');
+				},
+				function(error) {
+					console.log('impossible to create product');
+				}
+			);
+		}
+	});
 
 	connection.open();
 });

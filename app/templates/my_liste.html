@@ -17,14 +17,14 @@
 			<input type="text" name="unit" id="unit" class="form-control">
 			<label for="img">Image:</label>
 			<input type="text" name="img" id="img" class="form-control">
-			<input type="button" value="Creer" onclick="createProduct()">
+			<input type="button" value="Creer" id="create">
 		</form>
 	</div>
 	<div class="col-md-6">
 		<ul id="liste" class="list-group">
 			{% for achat in achats %}
 			<li class="list-group-item panier" id="{{ achat.Product.id }}">
-			    {{ achat.Product.name }}	
+			    {{ achat.Product.name }}
 				<span class="badge">{{ achat.ListProduct.quantity }}</span>
 			</li>
 			{% endfor %}

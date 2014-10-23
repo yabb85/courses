@@ -93,7 +93,7 @@ class Product(db.Model):
         self.img = img
 
     def __repr__(self):
-        return '<Product %r>' % self.name
+        return '<Product %r %r %r>' % (self.id, self.name, self.price)
 
 
 class ListProduct(db.Model):
