@@ -27,7 +27,7 @@ $(function() {
 		});
 
 		session.subscribe('refresh_create_product', function(prod) {
-			$('#list_prod').append('<li class="list-group-item achat" id="'+prod[0]+'">'+prod[1]+'<img class="unfold" src="" alt="&#x271A" /></li>')
+			$('#list_prod').append('<li class="list-group-item achat" id="'+prod[0]+'">'+prod[1]+'<span class="glyphicon glyphicon-plus"/></li>')
 		});
 	};
 

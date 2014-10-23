@@ -1,7 +1,36 @@
 body {
-  padding-top: 50px;
+	padding-top: 50px;
 }
+
 .starter-template {
-  padding: 40px 15px;
-  text-align: center;
+	padding: 40px 15px;
+	text-align: center;
+}
+
+.navbar {
+	border-bottom: 2px solid #08C;
+	box-shadow: 0px 2px 4px #aaa;
+}
+
+#form {
+	background-color: #08C;
+	color: white;
+	border-radius: 6px;
+	text-align: left;
+	margin-bottom: 10px;
+}
+
+#form_add_product {
+	display: none;
+}
+
+#button_add {
+	font-size: 20px;
+	font-style: Helvetica;
+	line-height: 40px;
+}
+
+input[type=button] {
+	margin-top: 5px;
+	color: black;
 }

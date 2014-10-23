@@ -5,7 +5,9 @@
 	</script>
 	<h1>{{ titre }}</h1>
 	<div id="form" class="col-md-12">
-		<img id="button_add" src="" alt="toto" onclick="unfold();"></img>
+		<div id="button_add">
+			<span class="glyphicon glyphicon-plus"/></span>Ajouter un produit
+		</div>
 		<form id="form_add_product" class="form-group">
 			<label for="name">Nom:</label>
 			<input type="text" name="name" id="name" class="form-control">
@@ -35,7 +37,7 @@
 			{% for produit in produits %}
 			<li class="list-group-item achat" id="{{ produit.id }}">
 				{{ produit.name }}
-				<img class="unfold" src="" alt="&#x271A" />
+				<span class="glyphicon glyphicon-plus"/>
 			</li>
 			{% endfor %}
 		</ul>
