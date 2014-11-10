@@ -19,6 +19,7 @@ from models import UserList
 from models import Liste
 from models import Product
 from models import ListProduct
+from models import Friends
 
 
 login_manager = LoginManager()
@@ -92,7 +93,8 @@ def profil():
     """
     Affiche la page de profil
     """
-    return render_template('profil.html', titre='profil')
+    friends = search_friends(g.user.id)
+    return render_template('profil.html', titre='profil', friends=friends)
 
 
 @app.route('/liste/')
@@ -105,7 +107,8 @@ def list():
     listes = []
     for el in results:
         listes.append(Liste.query.filter_by(id=el.list_id).first())
-    return render_template('liste.html', liste=listes)
+    friends = search_friends(g.user.id)
+    return render_template('liste.html', liste=listes, friends=friends)
 
 
 @app.route('/liste/<int:id_list>')
@@ -156,5 +159,16 @@ def before_request():
 
 
 @login_manager.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+def search_friends(user_id):
+    """docstring for search_friends"""
+    results = Friends.query.filter_by(user_id=user_id)
+    print results
+    friends = []
+    for user in results:
+        print user
+        friends.append(User.query.filter_by(id=user.friend).first())
+    return friends

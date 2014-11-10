@@ -91,9 +91,17 @@ $(function() {
 
 	$('.share').click(function() {
 		if (connection.session) {
-			alert('toto');
+			connection.session.call('me.hory.share_list', [this.tabIndex, this.title]).then(
+				function(res) {
+					console.log("yeah");
+				},
+				function(error) {
+					console.log("nooooo");
+				}
+			);
 		}
 	});
 
 	connection.open();
+
 });

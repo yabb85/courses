@@ -110,4 +110,19 @@ class ListProduct(db.Model):
 
     def __repr__(self):
         """docstring for __repr__"""
-        return '<ListProduct %r %r %r>' % (self.list_id, self.product_id, self.quantity)
+        return '<ListProduct %r %r %r>' % (self.list_id, self.product_id,
+                                           self.quantity)
+
+
+class Friends(db.Model):
+    __tablename__ = "friends"
+    user_id = Column('user_id', Integer, primary_key=True)
+    friend = Column('friend', Integer, primary_key=True)
+
+    def __init__(self, user_id, friend):
+        self.user_id = user_id
+        self.friend = friend
+
+    def __repr__(self):
+        """docstring for __repr__"""
+        return '<Friend %r %r>' % (self.user_id, self.friend)

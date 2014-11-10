@@ -4,6 +4,9 @@
 	<div>
 	Amis
 	<ul>
+		{% for friend in friends %}
+		<li>{{ friend.username }}</li>
+		{% endfor %}
 	</ul>
 	</div>
 {% endblock %}

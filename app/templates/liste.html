@@ -8,12 +8,21 @@
 		</form>
 	</div>
 	<h2> liste:</h2>
-	<ul>
+	<div class="btn-group-vertical">
 		{% for elem in liste %}
-		<li>
-			<a  href="/liste/{{ elem.id }}">{{ elem.name }}</a>
-			<a class="share" href="#"><i class="fa fa-share-alt"></i></a>
-		</li>
+			<a class="btn list_list" href="/liste/{{ elem.id }}">{{ elem.name }}</a>
+			<div class="dropdown">
+				<button class="btn btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+					<i class="fa fa-share-alt"></i>
+				</button>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+					{% for friend in friends %}
+						<li role="presentation">
+							<a class="share" role="menuitem" tabindex="{{ friend.id }}" title="{{ elem.id }}" href="#">{{ friend.username }}</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
 		{% endfor %}
-	</ul>
+	</div>
 {% endblock %}
