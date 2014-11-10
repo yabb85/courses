@@ -10,7 +10,10 @@
 	<h2> liste:</h2>
 	<ul>
 		{% for elem in liste %}
-		<li><a  href="/liste/{{ elem.id }}">{{ elem.name }}</a></li>
+		<li>
+			<a  href="/liste/{{ elem.id }}">{{ elem.name }}</a>
+			<a class="share" href="#"><i class="fa fa-share-alt"></i></a>
+		</li>
 		{% endfor %}
 	</ul>
 {% endblock %}

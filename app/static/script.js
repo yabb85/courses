@@ -89,5 +89,11 @@ $(function() {
 		}
 	});
 
+	$('.share').click(function() {
+		if (connection.session) {
+			alert('toto');
+		}
+	});
+
 	connection.open();
 });
