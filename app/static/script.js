@@ -4,7 +4,7 @@ $(function() {
 	var id_list = window.location.pathname.split('/');
 	var id_list = id_list[id_list.length-1];
 	var connection = new autobahn.Connection({
-		url: "ws://127.0.0.1:8080/ws",
+		url: "ws://127.0.0.1:5000/ws",
 		realm: "realm1"
 	});
 

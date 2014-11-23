@@ -61,4 +61,4 @@ def share_list(user_id, list_id):
 
 
 if __name__ == '__main__':
-    wamp.run(url='ws://127.0.0.1:8080/ws')
+    wamp.run(url='ws://127.0.0.1:5000/ws')
