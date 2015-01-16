@@ -166,9 +166,7 @@ def load_user(user_id):
 def search_friends(user_id):
     """docstring for search_friends"""
     results = Friends.query.filter_by(user_id=user_id)
-    print results
     friends = []
     for user in results:
-        print user
         friends.append(User.query.filter_by(id=user.friend).first())
     return friends
