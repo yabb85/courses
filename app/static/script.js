@@ -71,7 +71,7 @@ $(function() {
 	});
 
 	//create a new product
-	$('#create').click(function() {
+	$('#bt_create_product').click(function() {
 		if(connection.session) {
 			var name = $('#name').val();
 			var price = $('#price').val();
@@ -84,6 +84,20 @@ $(function() {
 				},
 				function(error) {
 					console.log('impossible to create product');
+				}
+			);
+		}
+	});
+
+	//add friend
+	$('#bt_add_friend').click(function() {
+		if(connection.session) {
+			var name = $('#name').val();
+			connection.session.call('me.hory.add_friend', [name, id]).then(
+				function(res) {
+				},
+				function(error) {
+					console.log('impossible to add friend');
 				}
 			);
 		}

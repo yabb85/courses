@@ -8,21 +8,28 @@
 		</form>
 	</div>
 	<h2> liste:</h2>
-	<div class="btn-group-vertical">
+	<ul class="list-group">
 		{% for elem in liste %}
-			<a class="btn list_list" href="/liste/{{ elem.id }}">{{ elem.name }}</a>
-			<div class="dropdown">
-				<button class="btn btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-					<i class="fa fa-share-alt"></i>
-				</button>
-				<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-					{% for friend in friends %}
-						<li role="presentation">
-							<a class="share" role="menuitem" tabindex="{{ friend.id }}" title="{{ elem.id }}" href="#">{{ friend.username }}</a>
-						</li>
-					{% endfor %}
-				</ul>
+		<li class="list-group-item">
+			<div class="btn-group">
+				<a class="btn list_list" href="/liste/{{ elem.id }}">{{ elem.name }}</a>
 			</div>
+			<div class="btn-group">
+					<button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+						<i class="fa fa-share-alt"></i>
+					</button>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+						{% for friend in friends %}
+							<li role="presentation">
+								<a class="share" role="menuitem" tabindex="{{ friend.id }}" title="{{ elem.id }}" href="#">{{ friend.username }}</a>
+							</li>
+						{% endfor %}
+					</ul>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default btn-sm" style="color:#F00">&#x2717</button>
+			</div>
+			</div>
+		</li>
 		{% endfor %}
-	</div>
+	</ul>
 {% endblock %}
