@@ -4,9 +4,6 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Courses</title>
-		<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-		<link href="{{ url_for('static', filename='css/font-awesome.css') }}" rel="stylesheet" type="text/css" />
-		<link href="{{ url_for('static', filename='start-template.css') }}" rel="stylesheet" type="text/css" />
     </head>
     <body>
 		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -49,9 +46,12 @@
 				</div>
 			</div>
 		</div>
+		<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
+		<link href="{{ url_for('static', filename='css/font-awesome.css') }}" rel="stylesheet" type="text/css" />
+		<link href="{{ url_for('static', filename='start-template.css') }}" rel="stylesheet" type="text/css" />
 		<script src="{{ url_for('static', filename='autobahn.min.js') }}"></script>
 		<script src="{{ url_for('static', filename='jquery-1.11.1.min.js') }}"></script>
-		<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 		<script src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
 </html>
