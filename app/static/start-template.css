@@ -12,6 +12,10 @@ body {
 	box-shadow: 0px 2px 4px #aaa;
 }
 
+.left {
+	text-align: left;
+}
+
 #form {
 	background-color: #08C;
 	color: white;
@@ -20,17 +24,19 @@ body {
 	margin-bottom: 10px;
 }
 
-#form_add_product {
-	display: none;
+#form_create_product {
+	padding: 5px 5px 5px 5px;
 }
 
 #button_add {
-	font-size: 20px;
-	font-style: Helvetica;
-	line-height: 40px;
+	color: #FFF;
+	background-color: #08C;
+	border-color: #07B;
 }
 
 input[type=button] {
 	margin-top: 5px;
 	color: black;
 }
+
+

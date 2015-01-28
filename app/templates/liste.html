@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 	<h1>{{ titre }}</h1>
-	<div id="newliste">
+	<div id="new_list">
 		<form action="/addlist/" method="post">
 			Nouvelle liste : <input type="text" name="name">
 			<input type="submit" value="Creer">
@@ -11,23 +11,21 @@
 	<ul class="list-group">
 		{% for elem in liste %}
 		<li class="list-group-item">
-			<div class="btn-group">
-				<a class="btn list_list" href="/liste/{{ elem.id }}">{{ elem.name }}</a>
-			</div>
-			<div class="btn-group">
-					<button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+			<a class="btn list_list" href="/liste/{{ elem.id }}">{{ elem.name }}</a>
+			<div class="btn-group btn-group-sm" role="group">
+				<div class="btn-group btn-group-sm" role="group">
+					<button class="btn btn-default dropdown-toggle" type="button" id="share_list" data-toggle="dropdown">
 						<i class="fa fa-share-alt"></i>
 					</button>
-					<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+					<ul class="dropdown-menu" role="menu" aria-labelledby="share_list">
 						{% for friend in friends %}
-							<li role="presentation">
-								<a class="share" role="menuitem" tabindex="{{ friend.id }}" title="{{ elem.id }}" href="#">{{ friend.username }}</a>
-							</li>
+						<li role="presentation">
+						<a class="share" role="menuitem" tabindex="{{ friend.id }}" title="{{ elem.id }}" href="#">{{ friend.username }}</a>
+						</li>
 						{% endfor %}
 					</ul>
-			<div class="btn-group">
-				<button type="button" class="btn btn-default btn-sm" style="color:#F00">&#x2717</button>
-			</div>
+				</div>
+				<button type="button" class="btn btn-default" style="color:#F00">&#x2717</button>
 			</div>
 		</li>
 		{% endfor %}
