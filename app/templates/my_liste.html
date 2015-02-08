@@ -27,29 +27,37 @@
 			</ul>
 		</div>
 	</div>
-	<div class="col-md-6">
-		<h3>Panier</h3>
-		<ul class="list-group list_achat">
-			{% for achat in achats %}
-			<li class="list-group-item achat" id="{{ achat.Product.id }}">
-				<!--<img src=""></img>-->
-			    {{ achat.Product.name }}
-				<span class="badge">{{ achat.ListProduct.quantity }}</span>
-			</li>
-			{% endfor %}
+	<div role="tabpanel">
+		<ul class="nav nav-pills" role="tablist">
+			<li role="presentation" class="active"><a href="#cart" aria-controls="cart" role="tab" data-toggle="tab">Cart</a></li>
+			<li role="presentation"><a href="#products" aria-controls="products" role="tab" data-toggle="tab">Products</a></li>
 		</ul>
-	</div>
-	<div class="col-md-6">
-		<h3>Liste de produits</h3>
-		<div class="row list_prod">
-			{% for produit in produits %}
-			<div class="col-xs-4">
-				<div class="thumbnail product" id="{{ produit.id }}">
-					<p class="">{{ produit.name }}</p>
-					<p>+</p>
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane active" id="cart">
+				<h3>Panier</h3>
+				<ul class="list-group list_achat">
+					{% for achat in achats %}
+					<li class="list-group-item achat" id="{{ achat.Product.id }}">
+						<!--<img src=""></img>-->
+						{{ achat.Product.name }}
+						<span class="badge">{{ achat.ListProduct.quantity }}</span>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+			<div role="tabpanel" class="tab-pane" id="products">
+				<h3>Liste de produits</h3>
+				<div class="row list_prod">
+					{% for produit in produits %}
+					<div class="col-xs-4 col-sm-3 col-lg-2">
+						<div class="thumbnail product" id="{{ produit.id }}">
+							<p class="">{{ produit.name }}</p>
+							<p>+</p>
+						</div>
+					</div>
+					{% endfor %}
 				</div>
 			</div>
-			{% endfor %}
 		</div>
 	</div>
 {% endblock %}
