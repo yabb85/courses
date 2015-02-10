@@ -11,4 +11,4 @@ app.config['SQLALCHEMY_DATABASE_URI'] = \
     'postgresql://disciple:lolo@localhost:5432/disciplebase'
 db = SQLAlchemy(app)
 
-from app import views, models
+from app import views, models, api

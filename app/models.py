@@ -45,6 +45,14 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+    @property
+    def serialize(self):
+        """docstring for serialize"""
+        return {
+            'id': self.id,
+            'username': self.username
+        }
+
 
 class Liste(db.Model):
     __tablename__ = "list"
@@ -59,8 +67,19 @@ class Liste(db.Model):
         """docstring for __repr__"""
         return '<Liste %r>' % self.name
 
+    @property
+    def serialize(self):
+        """docstring for serialize"""
+        return {
+            'id': self.id,
+            'name': self.name
+        }
+
 
 class UserList(db.Model):
+    """
+    Model to associate user with list
+    """
     __tablename__ = 'user_list'
     user_id = Column('user_id', Integer, primary_key=True)
     list_id = Column('list_id', Integer, primary_key=True)
@@ -73,6 +92,14 @@ class UserList(db.Model):
     def __repr__(self):
         """docstring for __repr__"""
         return '<User List %r %r>' % (self.user_id, self.list_id)
+
+    @property
+    def serialize(self):
+        """docstring for serialize"""
+        return {
+            'user_id': self.user_id,
+            'list_id': self.list_id
+        }
 
 
 class Product(db.Model):
@@ -94,6 +121,20 @@ class Product(db.Model):
 
     def __repr__(self):
         return '<Product %r %r %r>' % (self.id, self.name, self.price)
+        #return '{id: %r, name: %r, price %r, quantity: %r, unit: %r, img: %r}' \
+            #% (self.id, self.name, self.price, self.quantity, self.unit, self.img)
+
+    @property
+    def serialize(self):
+        """docstring for serialize"""
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+            'quantity': self.quantity,
+            'unit': self.unit,
+            'img': self.img
+        }
 
 
 class ListProduct(db.Model):
@@ -112,6 +153,18 @@ class ListProduct(db.Model):
         """docstring for __repr__"""
         return '<ListProduct %r %r %r>' % (self.list_id, self.product_id,
                                            self.quantity)
+        #return '{list_id: %r, product_id: %r, quantity: %r}' % (self.list_id,
+                                                                #self.product_id,
+                                                                #self.quantity)
+
+    @property
+    def serialize(self):
+        """docstring for serialize"""
+        return {
+            'id': self.list_id,
+            'product_id': self.product_id,
+            'quantity': self.quantity
+        }
 
 
 class Friends(db.Model):
@@ -126,3 +179,11 @@ class Friends(db.Model):
     def __repr__(self):
         """docstring for __repr__"""
         return '<Friend %r %r>' % (self.user_id, self.friend)
+
+    @property
+    def serialize(self):
+        """docstring for serialize"""
+        return {
+            'user_id': self.user_id,
+            'friend': self.friend
+        }

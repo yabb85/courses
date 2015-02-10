@@ -1,25 +1,30 @@
 #! /usr/bin/python
 # -*- coding:utf-8 -*-
 
+
+"""
+application Flask permettant de creer des listes de courses
+"""
+
 from app import app
 from app import db
+from app.models import User
+from app.models import UserList
+from app.models import Liste
+from app.models import Product
+from app.models import ListProduct
+from app.models import Friends
 from flask import redirect
 from flask import request
 from flask import render_template
 from flask import url_for
 from flask import flash
 from flask import g
-from flask.ext.login import current_user
-from flask.ext.login import LoginManager
-from flask.ext.login import login_required
-from flask.ext.login import login_user
-from flask.ext.login import logout_user
-from models import User
-from models import UserList
-from models import Liste
-from models import Product
-from models import ListProduct
-from models import Friends
+from flask_login import current_user
+from flask_login import LoginManager
+from flask_login import login_required
+from flask_login import login_user
+from flask_login import logout_user
 
 
 login_manager = LoginManager()
@@ -33,14 +38,7 @@ def index():
     fonction ouvrantla page principale
     c'est la racine du site
     """
-    return 'Hello'
-
-
-def registered(login, password):
-    result = False
-    if login == 'test' and password == 'toto':
-        result = True
-    return result
+    return redirect(url_for('all_list'))
 
 
 @app.route('/register/', methods=['GET', 'POST'])
@@ -97,23 +95,23 @@ def profil():
     return render_template('profil.html', titre='profil', friends=friends)
 
 
-@app.route('/liste/')
+@app.route('/list/')
 @login_required
-def list():
+def all_list():
     """
     Affiche l'ensemble des liste de course de l'utilisateur
     """
-    results = UserList.query.filter_by(user_id=g.user.id)
+    user_lists = UserList.query.filter_by(user_id=g.user.id)
     listes = []
-    for el in results:
-        listes.append(Liste.query.filter_by(id=el.list_id).first())
+    for element in user_lists:
+        listes.append(Liste.query.filter_by(id=element.list_id).first())
     friends = search_friends(g.user.id)
-    return render_template('liste.html', liste=listes, friends=friends)
+    return render_template('list.html', liste=listes, friends=friends)
 
 
-@app.route('/liste/<int:id_list>')
+@app.route('/list/<int:id_list>')
 @login_required
-def my_liste(id_list=''):
+def my_list(id_list=''):
     """
     Affiche la liste de course
     """
@@ -122,8 +120,16 @@ def my_liste(id_list=''):
     list_prod = db.session.query(ListProduct, Product).filter(
         ListProduct.list_id == id_list).join(Product, ListProduct.product_id ==
                                              Product.id)
-    return render_template('my_liste.html', produits=produits, titre=name,
+    return render_template('my_list.html', produits=produits, titre=name,
                            number=id_list, achats=list_prod)
+
+
+@app.route('/test/<int:id_list>')
+@login_required
+def test(id_list=''):
+    """docstring for test"""
+    name = Liste.query.filter_by(id=id_list).first().name
+    render_template('test.html', titre=name)
 
 
 @app.route('/addlist/', methods=['POST'])
@@ -150,16 +156,22 @@ def add_product():
                       request.form['img'])
     db.session.add(product)
     db.session.commit()
-    return redirect(request.args.get('next') or url_for('list'))
+    return redirect(request.args.get('next') or url_for('all_list'))
 
 
 @app.before_request
 def before_request():
+    """
+    function executed before all request
+    """
     g.user = current_user
 
 
 @login_manager.user_loader
 def load_user(user_id):
+    """
+    load user information
+    """
     return User.query.get(int(user_id))
 
 
