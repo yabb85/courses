@@ -129,7 +129,7 @@ def my_list(id_list=''):
 def test(id_list=''):
     """docstring for test"""
     name = Liste.query.filter_by(id=id_list).first().name
-    render_template('test.html', titre=name)
+    return render_template('test.html', titre=name)
 
 
 @app.route('/addlist/', methods=['POST'])

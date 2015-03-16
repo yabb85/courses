@@ -46,7 +46,7 @@ def api_my_list_extended(id_list=''):
     list_prod = db.session.query(ListProduct, Product).filter(
         ListProduct.list_id == id_list).join(Product, ListProduct.product_id ==
                                              Product.id)
-    return jsonify(achats=[{'list': i[0].serialize,
+    return jsonify(achats=[{'id': i[0].product_id, 'list': i[0].serialize,
                             'product': i[1].serialize}
                            for i in list_prod.all()])
 
