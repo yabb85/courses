@@ -2,7 +2,7 @@
 
 var cartControllers = angular.module('cartControllers', []);
 
-cartControllers.controller('courseCtrl', function($scope, $http, $wamp){
+cartControllers.controller('courseCtrl', function($scope, $http, $wamp, $routeParams){
 
 	$scope.id_list = window.location.pathname.split('/');
 	$scope.id_list = $scope.id_list[$scope.id_list.length-1];
@@ -72,7 +72,7 @@ cartControllers.controller('courseCtrl', function($scope, $http, $wamp){
 	$wamp.subscribe('refresh_create_product', refreshListProduct);
 
 	/* Request to REST api */
-	$http.get('/api/extended_list/1').success(function(data){
+	$http.get('/api/extended_list/' + $routeParams.listId).success(function(data){
 		$scope.bought = data.achats;
 	}).
 	error(function(data){
@@ -88,7 +88,7 @@ cartControllers.controller('courseCtrl', function($scope, $http, $wamp){
 
 	/* Action */
 	$scope.addToCart = function(id){
-		$wamp.call('me.hory.add_to_list', [id, $scope.id_list]).then(
+		$wamp.call('me.hory.add_to_list', [id, $routeParams.listId]).then(
 			function(res){
 				console.log('product added to list');
 			},
@@ -99,7 +99,7 @@ cartControllers.controller('courseCtrl', function($scope, $http, $wamp){
 	}
 
 	$scope.removeToCart = function(id){
-		$wamp.call('me.hory.remove_to_list', [id, $scope.id_list]).then(
+		$wamp.call('me.hory.remove_to_list', [id, $routeParams.listId]).then(
 			function(res){
 				console.log('product removed to list');
 			},
