@@ -57,7 +57,8 @@ def create_product(name, price, quantity, unit, img):
     product = Product(name, price, quantity, unit, img)
     db.session.add(product)
     db.session.commit()
-    wamp.session.publish('refresh_create_product', product.id, product.name)
+    wamp.session.publish('refresh_create_product', product.id, product.img,
+                         product.name, product.quantity, product.unit)
 
 
 @wamp.register()

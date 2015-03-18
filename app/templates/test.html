@@ -2,6 +2,27 @@
 {% block content %}
 	<h1>{{ titre }}</h1>
 	<div class="col-md-12 left" ng-app="myCart">
+		<div class="dropdown" ng-controller="courseCtrl">
+			<button class="btn btn-default dropdown-toggle" type="button" id="button_add" data-toggle="dropdown" aria-expanded="true">
+				Ajouter un nouveau produit
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+				<form id="form_create_product" class="form-group">
+					<label for="name">Nom:</label>
+					<input type="text" name="name" class="form-control" ng-model="product.name">
+					<label for="price">Prix:</label>
+					<input type="text" name="price" class="form-control" ng-model="product.price">
+					<label for="quantity">Quantité:</label>
+					<input type="text" name="quantity" class="form-control" ng-model="product.quantity">
+					<label for="unit">Unité:</label>
+					<input type="text" name="unit" class="form-control" ng-model="product.unit">
+					<label for="img">Image:</label>
+					<input type="text" name="img" class="form-control" ng-model="product.img">
+					<input type="button" value="Creer" ng-click="createProduct(product)">
+				</form>
+			</ul>
+		</div>
 		<div class="col-md-6" role="tabpanel" ng-controller="courseCtrl">
 			<h3>Panier</h3>
 			<ul class="list-group list_achat" ng-repeat="element in bought">

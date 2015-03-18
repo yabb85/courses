@@ -69,6 +69,18 @@ app.controller('courseCtrl', function($scope, $http, $wamp){
 	}
 	$wamp.subscribe('refresh_remove_product', refreshListRemoved);
 
+	function refreshListProduct(args) {
+		$scope.items.push({
+			"id": args[0],
+			"img": args[1],
+			"name": args[2],
+			"price": 1,
+			"quantity": args[4],
+			"unit": args[5]
+		});
+	}
+	$wamp.subscribe('refresh_create_product', refreshListProduct);
+
 	/* Request to REST api */
 	$http.get('/api/extended_list/1').success(function(data){
 		$scope.bought = data.achats;
@@ -103,6 +115,18 @@ app.controller('courseCtrl', function($scope, $http, $wamp){
 			},
 			function(error){
 				console.log('impossible to remove product in list');
+			}
+		);
+	}
+
+	$scope.createProduct = function(product) {
+		console.log(product.name);
+		$wamp.call('me.hory.create_product', [product.name, product.price, product.quantity, product.unit, product.img]).then(
+			function(res){
+				console.log('product created');
+			},
+			function(error){
+				console.log('impossible to create product');
 			}
 		);
 	}
