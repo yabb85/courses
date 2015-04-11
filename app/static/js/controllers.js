@@ -2,7 +2,7 @@
 
 var cartControllers = angular.module('cartControllers', []);
 
-cartControllers.controller('courseCtrl', function($scope, $http, $wamp, $routeParams){
+cartControllers.controller('cartCtrl', function($scope, $http, $wamp, $routeParams){
 
 	$scope.id_list = window.location.pathname.split('/');
 	$scope.id_list = $scope.id_list[$scope.id_list.length-1];
@@ -121,4 +121,57 @@ cartControllers.controller('courseCtrl', function($scope, $http, $wamp, $routePa
 		);
 	}
 
+});
+
+
+cartControllers.controller('loginCtrl', function($scope, $rootScope, $http, $location){
+	$scope.user_to_login= {};
+
+	$scope.loginUser = function(user) {
+		$scope.user_to_login = angular.copy(user);
+		$scope.user = {};
+
+		$http({
+			url: '/api/login/',
+			method: 'POST',
+			data: $scope.user_to_login
+		}).success(function(data) {
+			$rootScope.connected = true;
+			$location.path('/list');
+		}).error(function(data){
+			console.log(data);
+		});
+	};
+});
+
+cartControllers.controller('logoutCtrl', function($scope, $rootScope, $http, $location){
+	$scope.logoutUser = function() {
+		$http({
+			url: '/api/logout/',
+			method: 'post',
+			data: $scope.user_to_login
+		}).success(function(data) {
+			$rootScope.connected = false;
+			$location.path('/');
+		}).error(function(data){
+			console.log(data);
+		});
+	};
+});
+
+cartControllers.controller('allCartsCtrl', function($scope, $http) {
+	/* Request to REST api */
+	$http.get('/api/list/').success(function(data){
+		$scope.allCarts = data.lists;
+	}).
+	error(function(data){
+		console.log(data);
+	});
+	
+	$http.get('/api/friends/').success(function(data){
+		$scope.friends = data.friends;
+	}).
+	error(function(data){
+		console.log(data);
+	});
 });

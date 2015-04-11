@@ -10,11 +10,20 @@ var cartApp = angular.module('myCart', [
 cartApp.config(['$routeProvider', 
 	function($routeProvider){
 		$routeProvider.when('/', {
-			templateUrl: '../static/partial/home.html'
+			templateUrl: '../static/partial/login.html',
+			controller: 'loginCtrl'
 		}).
-		when('/test/:listId', {
-			templateUrl: '../static/partial/test.html',
-			controller: 'courseCtrl'
+		when('/list/', {
+			templateUrl: '../static/partial/allCarts.html',
+			controller: 'allCartsCtrl'
+		}).
+		when('/list/:listId', {
+			templateUrl: '../static/partial/cart.html',
+			controller: 'cartCtrl'
+		}).
+		when('/login/', {
+			templateUrl: '../static/partial/login.html',
+			controller: 'loginCtrl'
 		}).
 		otherwise({
 			redirectTo: '/test'
@@ -30,7 +39,16 @@ cartApp.config(['$wampProvider',
 		});
 	}
 ]);
-	
-cartApp.run(function($wamp){
+
+cartApp.run(function($rootScope, $wamp, $http){
 	$wamp.open();
+	$http({
+		url: '/api/connected/',
+		method: 'get',
+	}).success(function(data) {
+		$rootScope.connected = data.connected;
+	}).error(function(data){
+		console.log(data);
+	});
+	$rootScope.connected = false;
 })
