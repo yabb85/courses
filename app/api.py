@@ -25,6 +25,8 @@ __login_manager__ = LoginManager()
 __login_manager__.init_app(app)
 
 
+# user
+
 def get_user(username, password):
     """Check if user exist"""
     user = User.query.filter_by(username=username, password=password).first()
@@ -35,8 +37,19 @@ def get_user(username, password):
         return None
 
 
+def search_user(name):
+    """docstring for search_friends"""
+    result = db.session.query(User.id).filter(
+        User.username == name).first()
+    if result:
+        return result[0]
+    return None
+
+
+# login
+
 def logout():
-    """docstring for logout"""
+    """Logout the current user"""
     logout_user()
 
 
@@ -48,9 +61,56 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+# list
+
+def create_new_list(user_id, name):
+    """docstring for create_new_list"""
+    liste = Liste(name)
+    db.session.add(liste)
+    db.session.commit()
+    list_user = UserList(user_id, liste.id)
+    db.session.add(list_user)
+    db.session.commit()
+    return jsonify(list_id=liste.id)
+
+
+def remove_list(list_id):
+    """Remove a list with id list_id"""
+    user_list = db.session.query(UserList).filter(
+        UserList.list_id == list_id,
+        UserList.user_id == current_user.id).first()
+    db.session.delete(user_list)
+    db.session.commit()
+    users_list = db.session.query(UserList).filter(
+        UserList.list_id == list_id).all()
+    if not users_list:
+        list_prod = db.session.query(ListProduct).filter(
+            ListProduct.list_id == list_id)
+        for product in list_prod:
+            db.session.delete(product)
+            db.session.commit()
+        liste = db.session.query(Liste).filter(Liste.id == list_id).first()
+        db.session.delete(liste)
+        db.session.commit()
+
+
+# friend
+
+def add_friend(friend_id):
+    """docstring for add_friend"""
+    friend = Friends(current_user.id, friend_id)
+    friend.status = 'wait'
+    db.session.add(friend)
+    db.session.commit()
+
+
+def send_mail(address):
+    """docstring for send_mail"""
+    print address
+
 # move route #
 
-@app.route('/api/list/')
+@app.route('/api/list/', methods=['GET'])
 @login_required
 def api_all_list():
     """Return all list accessible by current user"""
@@ -63,7 +123,7 @@ def api_all_list():
     return jsonify(lists=listes)
 
 
-@app.route('/api/list/<int:id_list>')
+@app.route('/api/list/<int:id_list>', methods=['GET'])
 @login_required
 def api_my_list(id_list=''):
     """Return the list identified by id_list"""
@@ -72,7 +132,7 @@ def api_my_list(id_list=''):
     return jsonify(achats=[i.serialize for i in list_prod.all()])
 
 
-@app.route('/api/extended_list/<int:id_list>')
+@app.route('/api/extended_list/<int:id_list>', methods=['GET'])
 @login_required
 def api_my_list_extended(id_list=''):
     """Return the list identified by id_list with all products use by list"""
@@ -84,7 +144,7 @@ def api_my_list_extended(id_list=''):
                            for i in list_prod.all()])
 
 
-@app.route('/api/products/')
+@app.route('/api/products/', methods=['GET'])
 @login_required
 def api_products():
     """Return the list of products"""
@@ -92,7 +152,7 @@ def api_products():
     return jsonify(products=[prod.serialize for prod in list_prod])
 
 
-@app.route('/api/products/<int:id_list>')
+@app.route('/api/products/<int:id_list>', methods=['GET'])
 @login_required
 def api_products_list_id(id_list=''):
     """Return the list of product used by list identified by id_list"""
@@ -102,10 +162,10 @@ def api_products_list_id(id_list=''):
     return jsonify(products=[i[1].serialize for i in list_prod.all()])
 
 
-@app.route('/api/friends/')
+@app.route('/api/friends/', methods=['GET'])
 @login_required
 def api_friends():
-    """Return a lsit of friend for current user"""
+    """Return a list of friend for current user"""
     results = db.session.query(Friends).filter(
         Friends.user_id == current_user.id)
     friends = []

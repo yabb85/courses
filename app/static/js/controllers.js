@@ -133,7 +133,7 @@ cartControllers.controller('loginCtrl', function($scope, $rootScope, $http, $loc
 
 		$http({
 			url: '/api/login/',
-			method: 'POST',
+			method: 'post',
 			data: $scope.user_to_login
 		}).success(function(data) {
 			$rootScope.connected = true;
@@ -160,6 +160,8 @@ cartControllers.controller('logoutCtrl', function($scope, $rootScope, $http, $lo
 });
 
 cartControllers.controller('allCartsCtrl', function($scope, $http) {
+	$scope.cart_to_create = {}
+
 	/* Request to REST api */
 	$http.get('/api/list/').success(function(data){
 		$scope.allCarts = data.lists;
@@ -174,4 +176,71 @@ cartControllers.controller('allCartsCtrl', function($scope, $http) {
 	error(function(data){
 		console.log(data);
 	});
+
+	$scope.createCart = function(cart) {
+		$scope.cart_to_create = angular.copy(cart);
+		$scope.cart = {};
+
+		$http({
+			url: '/api/list/',
+			method: 'post',
+			data: $scope.cart_to_create
+		}).success(function(data) {
+			console.log(data);
+			$http.get('/api/list/').success(function(data){
+				$scope.allCarts = data.lists;
+			}).
+			error(function(data){
+				console.log(data);
+			});
+		}).error(function(data){
+			console.log(data);
+		});
+	};
+
+	$scope.removeCart = function(cart) {
+		$http({
+			url: '/api/list/' + Number(cart),
+			method: 'delete',
+		}).success(function(data) {
+			console.log(data);
+			$http.get('/api/list/').success(function(data){
+				$scope.allCarts = data.lists;
+			}).
+			error(function(data){
+				console.log(data);
+			});
+		}).error(function(data){
+			console.log(data);
+		});
+
+	};
+});
+
+cartControllers.controller('profilCtrl', function($scope, $http){
+	$http({
+		url: '/api/friends/',
+		method: 'get'
+	}).success(function(data) {
+		$scope.friends = data.friends;
+	}).error(function(data){
+		console.log(data);
+	});
+
+	$scope.addFriends = function(new_friend) {
+		$scope.friends_to_create = angular.copy(new_friend);
+		$scope.new_friend = {};
+		console.log($scope.friends_to_create);
+
+		$http({
+			url: '/api/friend/',
+			method: 'post',
+			data: $scope.friends_to_create
+		}).success(function(data) {
+			console.log(data);
+			//$scope.friends = data.friends;
+		}).error(function(data){
+			console.log(data);
+		});
+	};
 });

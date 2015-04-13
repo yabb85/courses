@@ -1,6 +1,15 @@
-<h1>All carts</h1>
 
 <div class="col-md-12" ng-controller="allCartsCtrl">
+	<div>
+		<form method="post" accept-charset="utf-8">
+			Nouvelle Liste:
+			<input type="text" name="name" ng-model="cart.name"/>
+			<input type="submit" value="Créer" ng-click="createCart(cart)">
+		</form>
+	</div>
+	
+	<h1>All carts</h1>
+
 	<ul class="list-group" ng-repeat="list in allCarts">
 		<li class="list-group-item" >
 			<a class="btn" href="#/list/{{list.id}}">{{list.name}}</a>
@@ -13,7 +22,7 @@
 						<li>{{friend.username}}</li>
 					</ul>
 				</div>
-				<button class="btn btn-default" type="button" style="color:#F00">
+				<button class="btn btn-default" type="button" style="color:#F00" ng-click="removeCart(list.id)">
 					✗
 				</button>
 			</div>

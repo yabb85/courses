@@ -171,6 +171,7 @@ class Friends(db.Model):
     __tablename__ = "friends"
     user_id = Column('user_id', Integer, primary_key=True)
     friend = Column('friend', Integer, primary_key=True)
+    status = Column('status', String(10))
 
     def __init__(self, user_id, friend):
         self.user_id = user_id

@@ -15,6 +15,7 @@ from flask import jsonify
 from flask import request
 from flask import render_template
 from flask_login import current_user
+from flask_login import login_required
 import json
 
 
@@ -26,9 +27,11 @@ def index():
     return render_template('layout.html')
 
 
+# login and logout
+
 @app.route('/api/login/', methods=['POST'])
 def login():
-    """docstring for login"""
+    """Login the current user."""
     user_to_login = json.loads(request.data)
     username = user_to_login.get("login")
     password = user_to_login.get("password")
@@ -36,12 +39,12 @@ def login():
     if user:
         return 'Success'
     else:
-        return 'Fail'
+        abort(401)
 
 
-@app.route('/api/logout/', methods=['POST', 'GET'])
+@app.route('/api/logout/', methods=['POST'])
 def logout():
-    """docstring for logout"""
+    """Logout the current user."""
     api.logout()
     return 'logout'
 
@@ -50,6 +53,7 @@ def logout():
 def register():
     """
     page de creation d'un nouveau compte
+    Create a new user
     """
     username = request.json.get('username')
     password = request.json.get('password')
@@ -63,32 +67,48 @@ def register():
     db.session.commit()
 
 
-@app.route('/api/connected/')
+@app.route('/api/connected/', methods=['GET'])
 def connected():
-    """docstring for connected"""
+    """Return if current user is logged"""
     return jsonify(connected=current_user.is_authenticated())
 
 
-#@app.route('/profil/')
-#@login_required
-#def profil():
-    #"""
-    #Affiche la page de profil
-    #"""
-    #friends = search_friends(g.user.id)
-    #return render_template('profil.html', titre='profil', friends=friends)
+# list of Carts
+
+@app.route('/api/list/', methods=['POST'])
+@login_required
+def create_new_list():
+    """Create a new liste for current user."""
+    cart_to_create = json.loads(request.data)
+    cart_name = cart_to_create.get('name')
+    return api.create_new_list(current_user.id, cart_name)
 
 
+@app.route('/api/list/<int:list_id>', methods=['DELETE'])
+@login_required
+def remove_list(list_id=''):
+    """remove a list defined by list_id"""
+    try:
+        api.remove_list(list_id)
+    except:
+        return 'Fail'
+    return 'Success'
 
-#@app.route('/addlist/', methods=['POST'])
-#def add_liste():
-    #"""
-    #Creer une nouvelle liste pour l'utilisateur courant
-    #"""
-    #liste = Liste(request.form['name'])
-    #db.session.add(liste)
-    #db.session.commit()
-    #list_user = UserList(g.user.id, liste.id)
-    #db.session.add(list_user)
-    #db.session.commit()
-    #return redirect('/liste/')
+
+# profil
+
+@app.route('/api/friend/', methods=['POST'])
+@login_required
+def add_friend():
+    """docstring for add_friend"""
+    friend = json.loads(request.data)
+    friend_name = friend.get('name')
+    friend_mail = friend.get('mail')
+    if not friend_mail and not friend_name:
+        return 'Fail'
+    friend_id = api.search_user(friend_name)
+    if friend_id:
+        api.add_friend(friend_id)
+    else:
+        api.send_mail(friend_mail)
+    return 'Success'

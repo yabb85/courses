@@ -25,6 +25,10 @@ cartApp.config(['$routeProvider',
 			templateUrl: '../static/partial/login.html',
 			controller: 'loginCtrl'
 		}).
+		when('/profil/', {
+			templateUrl: '../static/partial/profil.html',
+			controller: 'profilCtrl'
+		}).
 		otherwise({
 			redirectTo: '/test'
 		});
