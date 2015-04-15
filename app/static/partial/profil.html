@@ -5,7 +5,7 @@
 			<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
 				Ajouter un amis <span class="caret"></span>
 			</button>
-			<div class="dropdown-menu" style="padding:15px;">
+			<div class="dropdown-menu pull-center" style="padding:15px;">
 				<form id="form_add_friend" class="form">
 					<label for="name">Nom:</label>
 					<input type="text" name="name" ng-model="new_friend.name">
@@ -19,8 +19,25 @@
 	</div>
 	<div class="col-md-12">
 		Amis
-		<ul ng-repeat="friend in friends">
-			<li>{{ friend.username }}</li>
+		<ul class="list-group" ng-repeat="friend in friends">
+			<li class="list-group-item">
+			{{ friend.username }}
+			<div class="btn-group btn-group-sm" role="group">
+				<div class="btn-group btn-group-sm" role="group">
+					<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+						<i class="fa fa-share-alt"></i>
+					</button>
+					<ul class="dropdown-menu pull-center" role="menu">
+						<li class="text-center">list name</li>
+					</ul>
+				</div>
+				<button class="btn btn-default" type="button" style="color:#F00">
+					✗
+				</button>
+			</div>
+			</li>
 		</ul>
 	</div>
 </div>
+<link href="/static/css/dropdowns-enhancement.min.css" rel="stylesheet" type="text/css" />
+<!--<script type="text/javascript" src="/static/css/dropdowns-enhancement.js"/>-->

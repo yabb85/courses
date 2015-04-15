@@ -15,11 +15,11 @@
 			<a class="btn" href="#/list/{{list.id}}">{{list.name}}</a>
 			<div class="btn-group btn-group-sm" role="group">
 				<div class="btn-group btn-group-sm" role="group">
-					<button id="share_list" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+					<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
 						<i class="fa fa-share-alt"></i>
 					</button>
-					<ul class="dropdown-menu" aria-labelledby="share_list" role="menu" ng-repeat="friend in friends">
-						<li>{{friend.username}}</li>
+					<ul class="dropdown-menu pull-center" aria-labelledby="share_list" role="menu" ng-repeat="friend in friends">
+						<li class="text-center">{{friend.username}}</li>
 					</ul>
 				</div>
 				<button class="btn btn-default" type="button" style="color:#F00" ng-click="removeCart(list.id)">
