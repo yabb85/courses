@@ -25,8 +25,8 @@
 		</div>
 		<div class="col-md-6" role="tabpanel">
 			<h3>Panier</h3>
-			<ul class="list-group list_achat" ng-repeat="element in bought">
-				<li class="list-group-item achat" ng-click="removeToCart(element.product.id)">
+			<ul class="list-group list_achat">
+				<li class="list-group-item achat" ng-click="removeToCart(element.product.id)" ng-repeat="element in bought">
 					{{element.product.name|angular}}
 					<span class="badge">{{element.list.quantity|angular}}</span>
 				</li>

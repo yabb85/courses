@@ -10,16 +10,16 @@
 	
 	<h1>All carts</h1>
 
-	<ul class="list-group" ng-repeat="list in allCarts">
-		<li class="list-group-item" >
+	<ul class="list-group">
+		<li class="list-group-item" ng-repeat="list in allCarts">
 			<a class="btn" href="#/list/{{list.id}}">{{list.name}}</a>
 			<div class="btn-group btn-group-sm" role="group">
 				<div class="btn-group btn-group-sm" role="group">
 					<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
 						<i class="fa fa-share-alt"></i>
 					</button>
-					<ul class="dropdown-menu" aria-labelledby="share_list" role="menu" ng-repeat="friend in friends">
-						<li class="text-center">{{friend.username}}</li>
+					<ul class="dropdown-menu" aria-labelledby="share_list" role="menu">
+						<li class="text-center" ng-repeat="friend in friends">{{friend.username}}</li>
 					</ul>
 				</div>
 				<button class="btn btn-default" type="button" style="color:#F00" ng-click="removeCart(list.id)">
