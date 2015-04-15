@@ -16,14 +16,6 @@ body {
 	text-align: left;
 }
 
-#form {
-	background-color: #08C;
-	color: white;
-	border-radius: 6px;
-	text-align: left;
-	margin-bottom: 10px;
-}
-
 #form_create_product {
 	padding: 5px 5px 5px 5px;
 }
@@ -38,5 +30,4 @@ input[type=button] {
 	margin-top: 5px;
 	color: black;
 }
-
 

@@ -10,8 +10,8 @@ var cartApp = angular.module('myCart', [
 cartApp.config(['$routeProvider', 
 	function($routeProvider){
 		$routeProvider.when('/', {
-			templateUrl: '../static/partial/login.html',
-			controller: 'loginCtrl'
+			templateUrl: '../static/partial/index.html',
+			controller: 'indexCtrl'
 		}).
 		when('/list/', {
 			templateUrl: '../static/partial/allCarts.html',

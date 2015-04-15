@@ -6,13 +6,13 @@
 				Ajouter un amis <span class="caret"></span>
 			</button>
 			<div class="dropdown-menu pull-center" style="padding:15px;">
-				<form id="form_add_friend" class="form">
+				<form id="form_add_friend">
 					<label for="name">Nom:</label>
-					<input type="text" name="name" ng-model="new_friend.name">
+					<input type="text" name="name" ng-model="new_friend.name"/>
 					<p>ou</p>
 					<label for="name">Email:</label>
-					<input type="email" name="mail" ng-model="new_friend.mail">
-					<input type="button" value="Creer" ng-click="addFriends(new_friend)">
+					<input type="email" name="mail" ng-model="new_friend.mail"/>
+					<input type="button" value="Creer" ng-click="addFriends(new_friend)"/>
 				</form>
 			</div>
 		</div>

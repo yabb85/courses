@@ -55,9 +55,10 @@ def register():
     page de creation d'un nouveau compte
     Create a new user
     """
-    username = request.json.get('username')
-    password = request.json.get('password')
-    mail = request.json.get('mail')
+    user_to_create = json.loads(request.data)
+    username = user_to_create.get('name')
+    mail = user_to_create.get('mail')
+    password = user_to_create.get('password')
     if not username or not password or not mail:
         abort(400)
     if User.query.filter_by(username=username).first() is not None:
@@ -65,6 +66,7 @@ def register():
     user = User(username, password, mail)
     db.session.add(user)
     db.session.commit()
+    return 'Success'
 
 
 @app.route('/api/connected/', methods=['GET'])

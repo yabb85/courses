@@ -244,3 +244,21 @@ cartControllers.controller('profilCtrl', function($scope, $http){
 		});
 	};
 });
+
+cartControllers.controller('indexCtrl', function($scope, $http){
+	$scope.createUser = function(register) {
+		$scope.register_to_create = angular.copy(register);
+		$scope.register = {};
+
+		console.log(register);
+		$http({
+			url: '/api/register/',
+			method: 'post',
+			data: $scope.register_to_create
+		}).success(function(data) {
+			console.log(data);
+		}).error(function(data) {
+			console.log(data);
+		});
+	};
+});
