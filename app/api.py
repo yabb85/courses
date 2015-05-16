@@ -46,6 +46,14 @@ def search_user(name):
     return None
 
 
+def add_user(username, password, mail):
+    """docstring for add_user"""
+    user = User(username, password, mail)
+    db.session.add(user)
+    db.session.commit()
+    return 'Success'
+
+
 # login
 
 def logout():
@@ -94,6 +102,18 @@ def remove_list(list_id):
         db.session.commit()
 
 
+def share_list(user_id, list_id):
+    """docstring for share_list"""
+    user_list = db.session.query(UserList).filter(UserList.user_id == user_id,
+                                                  UserList.list_id == list_id).first()
+    if not user_list:
+        new_user_list = UserList(user_id, list_id)
+        db.session.add(new_user_list)
+        db.session.commit()
+        return 'Success'
+    return 'Fail: already exist'
+
+
 # friend
 
 def add_friend(friend_id):
@@ -107,6 +127,7 @@ def add_friend(friend_id):
 def send_mail(address):
     """docstring for send_mail"""
     print address
+
 
 # move route #
 

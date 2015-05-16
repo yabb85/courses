@@ -7,7 +7,6 @@ application Flask permettant de creer des listes de courses
 """
 
 from app import app
-from app import db
 from app import api
 from app.models import User
 from flask import abort
@@ -63,10 +62,7 @@ def register():
         abort(400)
     if User.query.filter_by(username=username).first() is not None:
         abort(400)
-    user = User(username, password, mail)
-    db.session.add(user)
-    db.session.commit()
-    return 'Success'
+    return api.add_user(username, password, mail)
 
 
 @app.route('/api/connected/', methods=['GET'])
@@ -95,6 +91,16 @@ def remove_list(list_id=''):
     except:
         return 'Fail'
     return 'Success'
+
+
+@app.route('/api/share/', methods=['POST'])
+@login_required
+def share():
+    """docstring for share_user"""
+    data = json.loads(request.data)
+    friend = data.get('friend')
+    cart = data.get('cart')
+    return api.share_list(friend, cart)
 
 
 # profil

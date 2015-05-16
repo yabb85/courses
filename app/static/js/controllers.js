@@ -1,6 +1,6 @@
 
 
-var cartControllers = angular.module('cartControllers', []);
+var cartControllers = angular.module('cartControllers', ['cartServices']);
 
 cartControllers.controller('cartCtrl', function($scope, $http, $wamp, $routeParams){
 
@@ -159,23 +159,19 @@ cartControllers.controller('logoutCtrl', function($scope, $rootScope, $http, $lo
 	};
 });
 
-cartControllers.controller('allCartsCtrl', function($scope, $http) {
+cartControllers.controller('allCartsCtrl', function($scope, $http, requestService) {
 	$scope.cart_to_create = {}
 
 	/* Request to REST api */
-	$http.get('/api/list/').success(function(data){
-		$scope.allCarts = data.lists;
-	}).
-	error(function(data){
-		console.log(data);
+	requestService.list().then(function(d){
+		$scope.allCarts = d
+	});
+
+	requestService.friends().then(function(d){
+		$scope.friends = d;
 	});
 	
-	$http.get('/api/friends/').success(function(data){
-		$scope.friends = data.friends;
-	}).
-	error(function(data){
-		console.log(data);
-	});
+	$scope.shareList = requestService.share;
 
 	$scope.createCart = function(cart) {
 		$scope.cart_to_create = angular.copy(cart);
@@ -217,15 +213,16 @@ cartControllers.controller('allCartsCtrl', function($scope, $http) {
 	};
 });
 
-cartControllers.controller('profilCtrl', function($scope, $http){
-	$http({
-		url: '/api/friends/',
-		method: 'get'
-	}).success(function(data) {
-		$scope.friends = data.friends;
-	}).error(function(data){
-		console.log(data);
+cartControllers.controller('profilCtrl', function($scope, $http, requestService) {
+
+	requestService.friends().then(function(d){
+		$scope.friends = d;
 	});
+
+	requestService.list().then(function(d){
+		$scope.lists = d;
+	});
+
 
 	$scope.addFriends = function(new_friend) {
 		$scope.friends_to_create = angular.copy(new_friend);
@@ -243,6 +240,8 @@ cartControllers.controller('profilCtrl', function($scope, $http){
 			console.log(data);
 		});
 	};
+
+	$scope.shareList = requestService.share;
 });
 
 cartControllers.controller('indexCtrl', function($scope, $http){

@@ -4,7 +4,8 @@
 var cartApp = angular.module('myCart', [
 	'vxWamp',
 	'ngRoute',
-	'cartControllers'
+	'cartControllers',
+	'cartServices'
 ]);
 
 cartApp.config(['$routeProvider', 

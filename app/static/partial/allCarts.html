@@ -1,5 +1,5 @@
 
-<div class="col-md-12" ng-controller="allCartsCtrl">
+<div class="col-md-12">
 	<div>
 		<form method="post" accept-charset="utf-8">
 			Nouvelle Liste:
@@ -19,7 +19,7 @@
 						<i class="fa fa-share-alt"></i>
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="share_list" role="menu">
-						<li class="text-center" ng-repeat="friend in friends">{{friend.username}}</li>
+						<li class="text-center" ng-repeat="friend in friends" ng-click="shareList(list.id, friend.id)">{{friend.username}}</li>
 					</ul>
 				</div>
 				<button class="btn btn-default" type="button" style="color:#F00" ng-click="removeCart(list.id)">
