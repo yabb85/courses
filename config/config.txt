@@ -1,0 +1,14 @@
+[wamp]
+url: 127.0.0.1
+port: 5000
+
+[flask]
+url: 0.0.0.0
+port: 5000
+
+[bdd]
+url: 172.17.0.1
+port: 5432
+user: disciple
+pass: lolo
+base: disciplebase

@@ -6,6 +6,7 @@ Wamp router
 
 from autobahn.twisted.wamp import Application
 from app import db
+from app import config
 from app.models import ListProduct
 from app.models import Product
 from app.models import UserList
@@ -72,4 +73,5 @@ def share_list(user_id, list_id):
 
 
 if __name__ == '__main__':
-    wamp.run(url='ws://127.0.0.1:5000/ws')
+    wamp.run(url='ws://' + config.get('wamp', 'url') +
+             ':' + config.get('wamp', 'port') + '/ws')

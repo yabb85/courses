@@ -35,7 +35,6 @@ def login():
     username = user_to_login.get("login")
     password = user_to_login.get("password")
     user = api.get_user(username, password)
-    print user
     if user:
         return 'Success'
     else:
