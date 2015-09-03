@@ -13,7 +13,7 @@ from flask_triangle import Triangle
 app = Flask(__name__)
 app.secret_key = 'gjbd iud,hghb nux, b'
 app.config['SQLALCHEMY_DATABASE_URI'] = \
-    'postgresql://disciple:lolo@localhost:5432/disciplebase'
+    'postgresql://disciple:lolo@172.17.0.1:5432/disciplebase'
 Triangle(app)
 db = SQLAlchemy(app)
 

@@ -130,7 +130,7 @@ class Product(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'price': self.price,
+            'price': str(self.price),
             'quantity': self.quantity,
             'unit': self.unit,
             'img': self.img

@@ -23,6 +23,7 @@ def _():
 @wamp.register()
 def add_to_list(product, liste):
     """Add a new product in liste on database"""
+    print 'add to list'
     result = ListProduct.query.filter_by(list_id=liste,
                                          product_id=product).first()
     number = 1
@@ -71,4 +72,4 @@ def share_list(user_id, list_id):
 
 
 if __name__ == '__main__':
-    wamp.run(url='ws://127.0.0.1:8080/ws')
+    wamp.run(url='ws://127.0.0.1:5000/ws')

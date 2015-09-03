@@ -131,6 +131,7 @@ cartControllers.controller('loginCtrl', function($scope, $rootScope, $http, $loc
 		$scope.user_to_login = angular.copy(user);
 		$scope.user = {};
 
+		console.log($scope.user_to_login);
 		$http({
 			url: '/api/login/',
 			method: 'post',

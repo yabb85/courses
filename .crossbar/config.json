@@ -30,7 +30,8 @@
 				{
 					"type": "class",
 					"classname": "server.wamp",
-					"realm": "realm1"
+					"realm": "realm1",
+					"role": "anonymous"
 				}
 			],
 			"transports": [

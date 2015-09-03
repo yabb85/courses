@@ -39,7 +39,7 @@ cartApp.config(['$routeProvider',
 cartApp.config(['$wampProvider', 
 	function($wampProvider){
 		$wampProvider.init({
-			url: "ws://127.0.0.1:8080/ws",
+			url: "ws://127.0.0.1:5000/ws",
 			realm: "realm1"
 		});
 	}
