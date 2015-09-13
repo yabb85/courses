@@ -4,14 +4,14 @@
 """
 Initialisation package
 """
-
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_triangle import Triangle
 from ConfigParser import ConfigParser
 
 
-config = ConfigParser()
+config = ConfigParser(os.environ)
 config.read('../config/config.txt')
 
 
