@@ -6,6 +6,7 @@ cartControllers.controller('cartCtrl', function($scope, $http, $wamp, $routePara
 
 	$scope.id_list = window.location.pathname.split('/');
 	$scope.id_list = $scope.id_list[$scope.id_list.length-1];
+	$scope.product = {};
 
 	/* Wamp */
 	//Executed at connection to wamp server
@@ -114,6 +115,7 @@ cartControllers.controller('cartCtrl', function($scope, $http, $wamp, $routePara
 		$wamp.call('me.hory.create_product', [product.name, product.price, product.quantity, product.unit, product.img]).then(
 			function(res){
 				console.log('product created');
+				$scope.product = {};
 			},
 			function(error){
 				console.log('impossible to create product');
