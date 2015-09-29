@@ -7,7 +7,7 @@ url: 0.0.0.0
 port: 5000
 
 [bdd]
-url: 172.17.0.1
+url: %(POSTGRES_PORT_5432_TCP_ADDR)s
 port: 5432
 user: disciple
 pass: lolo
