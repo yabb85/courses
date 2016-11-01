@@ -8,7 +8,7 @@ var cartApp = angular.module('myCart', [
 	'cartServices'
 ]);
 
-cartApp.config(['$routeProvider', 
+cartApp.config(['$routeProvider',
 	function($routeProvider){
 		$routeProvider.when('/', {
 			templateUrl: '../static/partial/index.html',
@@ -36,7 +36,7 @@ cartApp.config(['$routeProvider',
 	}
 ]);
 
-cartApp.config(['$wampProvider', 
+cartApp.config(['$wampProvider',
 	function($wampProvider){
 		$wampProvider.init({
 			url: "ws://127.0.0.1:5000/ws",

@@ -4,7 +4,7 @@
 Wamp router
 """
 
-from autobahn.twisted.wamp import Application
+from autobahn.twisted.wamp import ApplicationSession
 from app import db
 from app import config
 from app.models import ListProduct
@@ -12,66 +12,49 @@ from app.models import Product
 from app.models import UserList
 
 
-wamp = Application('me.hory')
+class MyComponent(ApplicationSession):
+    """docstring for MyComponent"""
+    def onJoin(self, details):
+        print 'session attached'
 
+        def add_to_list(product, liste):
+            """Add a new product in list on database"""
+            result = ListProduct.query.filter_by(list_id=liste,
+                                                product_id=product).first()
+            number = 1
+            if result is not None:
+                # update le nombre de produit
+                number = int(result.quantity) + 1
+                result.quantity = number
+            else:
+                # ajoute un produit dans la liste
+                new_prod = ListProduct(liste, product, number)
+                db.session.add(new_prod)
+            db.session.commit()
+            prod = Product.query.filter_by(id=product).first()
+            self.publish('refresh_add_product', product, liste, prod.name,
+                                number, prod.unit, prod.img)
+        self.register(add_to_list, 'me.hory.add_to_list');
 
-@wamp.signal('onjoined')
-def _():
-    """Executed during connection with client"""
-    print 'session attached'
+        def remove_to_list(product, liste):
+            """remove a product in list on database"""
+            ListProduct.query.filter_by(list_id=liste, product_id=product).delete()
+            db.session.commit()
+            self.publish('refresh_remove_product', product)
+        self.register(remove_to_list, 'me.hory.remove_to_list');
 
+        def create_product(name, price, quantity, unit, img):
+            """Create a new product on database"""
+            product = Product(name, price, quantity, unit, img)
+            db.session.add(product)
+            db.session.commit()
+            self.publish('refresh_create_product', product.id, product.img,
+                                product.name, product.quantity, product.unit)
+        self.register(create_product, 'me.hory.create_product');
 
-@wamp.register()
-def add_to_list(product, liste):
-    """Add a new product in liste on database"""
-    print 'add to list'
-    result = ListProduct.query.filter_by(list_id=liste,
-                                         product_id=product).first()
-    number = 1
-    if result is not None:
-        # update le nombre de produit
-        number = int(result.quantity) + 1
-        result.quantity = number
-    else:
-        # ajoute un produit dans la liste
-        lp = ListProduct(liste, product, number)
-        db.session.add(lp)
-    db.session.commit()
-    prod = Product.query.filter_by(id=product).first()
-    #wamp.session.publish('refresh_add_product', [product, liste, prod.name,
-                                                 #prod.price, number, prod.unit,
-                                                 #prod.img])
-    wamp.session.publish('refresh_add_product', product, liste, prod.name,
-                         number, prod.unit, prod.img)
-
-
-@wamp.register()
-def remove_to_list(product, liste):
-    """remove a product in list on database"""
-    ListProduct.query.filter_by(list_id=liste, product_id=product).delete()
-    db.session.commit()
-    wamp.session.publish('refresh_remove_product', product)
-
-
-@wamp.register()
-def create_product(name, price, quantity, unit, img):
-    """Create a new product on database"""
-    product = Product(name, price, quantity, unit, img)
-    db.session.add(product)
-    db.session.commit()
-    wamp.session.publish('refresh_create_product', product.id, product.img,
-                         product.name, product.quantity, product.unit)
-
-
-@wamp.register()
-def share_list(user_id, list_id):
-    """Share a list with other user"""
-    print "toto"
-    list_user = UserList(user_id, list_id)
-    db.session.add(list_user)
-    db.session.commit()
-
-
-if __name__ == '__main__':
-    wamp.run(url='ws://' + config.get('wamp', 'url') +
-             ':' + config.get('wamp', 'port') + '/ws')
+        def share_list(user_id, list_id):
+            """Share a list with other user"""
+            list_user = UserList(user_id, list_id)
+            db.session.add(list_user)
+            db.session.commit()
+        self.register(share_list, 'me.hory.share_list');

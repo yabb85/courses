@@ -11,7 +11,7 @@ cartControllers.controller('cartCtrl', function($scope, $http, $wamp, $routePara
 	/* Wamp */
 	//Executed at connection to wamp server
 	$scope.$on("$wamp.open", function (event, session) {
-		console.log('We are connected to the WAMP Router!'); 
+		console.log('We are connected to the WAMP Router!');
 	});
 
 	//Executed after loose or close connection with wamp server
@@ -56,7 +56,7 @@ cartControllers.controller('cartCtrl', function($scope, $http, $wamp, $routePara
 				continue;
 			$scope.bought.splice(i, 1);
 			break;
-		};	
+		};
 	}
 	$wamp.subscribe('refresh_remove_product', refreshListRemoved);
 
@@ -172,7 +172,7 @@ cartControllers.controller('allCartsCtrl', function($scope, $http, requestServic
 	requestService.friends().then(function(d){
 		$scope.friends = d;
 	});
-	
+
 	$scope.shareList = requestService.share;
 
 	$scope.createCart = function(cart) {
