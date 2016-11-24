@@ -1,196 +1,227 @@
 #! /usr/bin/python
 # -*- coding:utf-8 -*-
-
 """
-API to use course services
+Define all routes used by api system
 """
 
-from app import app
-from app import db
-from app.models import Friends
-from app.models import Liste
-from app.models import ListProduct
-from app.models import Product
-from app.models import User
-from app.models import UserList
-from flask import jsonify
-from flask_login import current_user
-from flask_login import LoginManager
-from flask_login import login_required
-from flask_login import login_user
-from flask_login import logout_user
+from __future__ import print_function
+from flask_restful import Api
+from flask_restful import Resource
+from flask_restful import reqparse
+from flask_jwt import jwt_required
+from flask_jwt import current_identity
+from app.models import DATA_BASE
+from app.models import Basket as db_Basket
+from app.models import Product as db_Product
+from app.security import create_user
 
 
-__login_manager__ = LoginManager()
-__login_manager__.init_app(app)
+api = Api()
 
 
-# user
-
-def get_user(username, password):
-    """Check if user exist"""
-    user = User.query.filter_by(username=username, password=password).first()
-    if user:
-        login_user(user)
-        return user
-    else:
-        return None
-
-
-def search_user(name):
-    """docstring for search_friends"""
-    result = db.session.query(User.id).filter(
-        User.username == name).first()
-    if result:
-        return result[0]
-    return None
-
-
-def add_user(username, password, mail):
-    """docstring for add_user"""
-    user = User(username, password, mail)
-    db.session.add(user)
-    db.session.commit()
-    return 'Success'
-
-
-# login
-
-def logout():
-    """Logout the current user"""
-    logout_user()
-
-
-@__login_manager__.user_loader
-def load_user(user_id):
+class Home(Resource):
     """
-    load user information
+    Define List api
     """
-    return User.query.get(int(user_id))
+    decorators = [jwt_required()]
+
+    def __init__(self):
+        super(Home, self).__init__()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('name', type=str, help='')
+
+    def get(self):
+        """
+        Display list of baskets possessed by user
+        """
+        baskets = []
+        for element in current_identity.baskets:
+            baskets.append({
+                'id': element.id,
+                'name': element.name
+            })
+        return {
+            'Baskets': baskets
+        }
+
+    def post(self):
+        """
+        Create new basket for current user
+        """
+        args = self.parser.parse_args()
+        name = args['name']
+        basket = db_Basket(name=name, description="")
+        basket.users.append(current_identity)
+        DATA_BASE.session.add(basket)
+        DATA_BASE.session.commit()
+        DATA_BASE.session.refresh(current_identity)
+        baskets = []
+        for element in current_identity.baskets:
+            baskets.append({
+                'id': element.id,
+                'name': element.name
+            })
+        return {
+            'Baskets': baskets
+        }
 
 
-# list
+class Basket(Resource):
+    """
+    Define list of Basket
+    """
+    decorators = [jwt_required()]
 
-def create_new_list(user_id, name):
-    """docstring for create_new_list"""
-    liste = Liste(name)
-    db.session.add(liste)
-    db.session.commit()
-    list_user = UserList(user_id, liste.id)
-    db.session.add(list_user)
-    db.session.commit()
-    return jsonify(list_id=liste.id)
+    def __init__(self):
+        """docstring for __init__"""
+        super(Basket, self).__init__()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('id')
 
+    def get(self, basket_id):
+        """
+        Return description of list with products in basket
+        """
+        basket = db_Basket.query.get(basket_id)
+        products = []
+        for element in basket.orders:
+            print(element.__dict__)
+            product_id = element.products_id
+            product = db_Product.query.get(product_id)
+            products.append({
+                'id': product.id,
+                'name': product.name,
+                'quantity': element.quantity
+            })
+        return {
+            'id': basket_id,
+            'name': basket.name,
+            'inBasket': products
+        }
 
-def remove_list(list_id):
-    """Remove a list with id list_id"""
-    user_list = db.session.query(UserList).filter(
-        UserList.list_id == list_id,
-        UserList.user_id == current_user.id).first()
-    db.session.delete(user_list)
-    db.session.commit()
-    users_list = db.session.query(UserList).filter(
-        UserList.list_id == list_id).all()
-    if not users_list:
-        list_prod = db.session.query(ListProduct).filter(
-            ListProduct.list_id == list_id)
-        for product in list_prod:
-            db.session.delete(product)
-            db.session.commit()
-        liste = db.session.query(Liste).filter(Liste.id == list_id).first()
-        db.session.delete(liste)
-        db.session.commit()
+    def post(self, basket_id):
+        """
+        Add new product to selected basket
+        """
+        args = self.parser.parse_args()
+        basket = db_Basket.query.get(basket_id)
+        product = db_Product.query.get(args['id'])
+        founded = False
+        for element in basket.orders:
+            if product.id == element.products_id:
+                element.quantity += 1
+                founded = True
+        if not founded:
+                basket.add_product(product, 1)
+        DATA_BASE.session.commit()
+        products = []
+        for element in basket.orders:
+            product_id = element.products_id
+            product = db_Product.query.get(product_id)
+            products.append({
+                'id': product.id,
+                'name': product.name,
+                'quantity': element.quantity
+            })
+        return {
+            'id': basket_id,
+            'name': basket.name,
+            'inBasket': products
+        }
 
-
-def share_list(user_id, list_id):
-    """docstring for share_list"""
-    user_list = db.session.query(UserList).filter(UserList.user_id == user_id,
-                                                  UserList.list_id == list_id).first()
-    if not user_list:
-        new_user_list = UserList(user_id, list_id)
-        db.session.add(new_user_list)
-        db.session.commit()
-        return 'Success'
-    return 'Fail: already exist'
-
-
-# friend
-
-def add_friend(friend_id):
-    """docstring for add_friend"""
-    friend = Friends(current_user.id, friend_id)
-    friend.status = 'wait'
-    db.session.add(friend)
-    db.session.commit()
-
-
-def send_mail(address):
-    """docstring for send_mail"""
-    print address
-
-
-# move route #
-
-@app.route('/api/list/', methods=['GET'])
-@login_required
-def api_all_list():
-    """Return all list accessible by current user"""
-    user_lists = db.session.query(UserList).filter(
-        UserList.user_id == current_user.id)
-    listes = []
-    for element in user_lists:
-        listes.append(db.session.query(Liste).filter(
-            Liste.id == element.list_id).first().serialize)
-    return jsonify(lists=listes)
-
-
-@app.route('/api/list/<int:id_list>', methods=['GET'])
-@login_required
-def api_my_list(id_list=''):
-    """Return the list identified by id_list"""
-    list_prod = db.session.query(ListProduct).filter(
-        ListProduct.list_id == id_list)
-    return jsonify(achats=[i.serialize for i in list_prod.all()])
-
-
-@app.route('/api/extended_list/<int:id_list>', methods=['GET'])
-@login_required
-def api_my_list_extended(id_list=''):
-    """Return the list identified by id_list with all products use by list"""
-    list_prod = db.session.query(ListProduct, Product).filter(
-        ListProduct.list_id == id_list).join(Product, ListProduct.product_id ==
-                                             Product.id)
-    return jsonify(achats=[{'id': i[0].product_id, 'list': i[0].serialize,
-                            'product': i[1].serialize}
-                           for i in list_prod.all()])
+    def delete(self, basket_id):
+        """Remove a product of selected basket"""
+        args = self.parser.parse_args()
+        basket = db_Basket.query.get(basket_id)
+        product = db_Product.query.get(args['id'])
+        basket.remove_product(product)
+        DATA_BASE.session.commit()
+        products = []
+        for element in basket.orders:
+            product_id = element.products_id
+            product = db_Product.query.get(product_id)
+            products.append({
+                'id': product.id,
+                'name': product.name,
+                'quantity': element.quantity
+            })
+        return {
+            'id': basket_id,
+            'name': basket.name,
+            'inBasket': products
+        }
 
 
-@app.route('/api/products/', methods=['GET'])
-@login_required
-def api_products():
-    """Return the list of products"""
-    list_prod = db.session.query(Product).all()
-    return jsonify(products=[prod.serialize for prod in list_prod])
+
+class User(Resource):
+    """Manage User"""
+    def __init__(self):
+        super(User, self).__init__()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('name', type=str, help='')
+        self.parser.add_argument('password', type=str, help='')
+        self.parser.add_argument('email', type=str, help='')
+
+    def post(self):
+        """docstring for psott"""
+        args = self.parser.parse_args()
+        name = args['name']
+        password = args['password']
+        email = args['email']
+        return create_user(name, password, email)
 
 
-@app.route('/api/products/<int:id_list>', methods=['GET'])
-@login_required
-def api_products_list_id(id_list=''):
-    """Return the list of product used by list identified by id_list"""
-    list_prod = db.session.query(ListProduct, Product).filter(
-        ListProduct.list_id == id_list).join(Product, ListProduct.product_id ==
-                                             Product.id)
-    return jsonify(products=[i[1].serialize for i in list_prod.all()])
+class Product(Resource):
+    """
+    Manage products
+    """
+    decorators = [jwt_required()]
+
+    def __init__(self):
+        """docstring for __init__"""
+        super(Product, self).__init__()
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('name', type=str, help='')
+        self.parser.add_argument('img', type=str, help='')
+
+    def get(self):
+        """docstring for get"""
+        products = db_Product.query.filter()
+        result = []
+        for product in products:
+            result.append({
+                'id': product.id,
+                'name': product.name,
+                'img': product.img
+            })
+        return {
+            'products': result
+        }
+
+    def post(self):
+        """
+        Create new product
+        """
+        args = self.parser.parse_args()
+        name = args['name']
+        img = args['img']
+        product = db_Product(name, img)
+        DATA_BASE.session.add(product)
+        DATA_BASE.session.commit()
+        products = db_Product.query.all()
+        result = []
+        for product in products:
+            result.append({
+                'id': product.id,
+                'name': product.name,
+                'img': product.img
+            })
+        return {
+            'products': result
+        }
 
 
-@app.route('/api/friends/', methods=['GET'])
-@login_required
-def api_friends():
-    """Return a list of friend for current user"""
-    results = db.session.query(Friends).filter(
-        Friends.user_id == current_user.id)
-    friends = []
-    for user in results:
-        friends.append(db.session.query(User).filter(
-            User.id == user.friend).first())
-    return jsonify(friends=[friend.serialize for friend in friends])
+api.add_resource(Home, '/api/baskets')
+api.add_resource(Basket, '/api/baskets/<string:basket_id>')
+api.add_resource(User, '/api/users')
+api.add_resource(Product, '/api/products')

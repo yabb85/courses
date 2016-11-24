@@ -1,28 +1,30 @@
 #! /usr/bin/python
 # -*- coding:utf-8 -*-
-
 """
 Initialisation package
 """
 import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_triangle import Triangle
-from ConfigParser import ConfigParser
+from flask_restful import Api
+from app.models import DATA_BASE
+from app.api import api
+from app.security import security
+from app.views import simple_page
+from app.socketio import socketio
 
 
-config = ConfigParser(os.environ)
-config.read('../config/config.txt')
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_object('config.default')
+app.config.from_envvar('APP_CONFIG_FILE')
+app.register_blueprint(simple_page)
+DATA_BASE.init_app(app)
+api.init_app(app)
+security.init_app(app)
+socketio.init_app(app)
 
 
-app = Flask(__name__)
-app.secret_key = 'gjbd iud,hghb nux, b'
-app.config['SQLALCHEMY_DATABASE_URI'] = \
-    'postgresql://' + config.get('bdd', 'user') + ':' + \
-    config.get('bdd', 'pass') + '@' + config.get('bdd', 'url') + \
-    ':' + config.get('bdd', 'port') + '/' + config.get('bdd', 'base')
-
-Triangle(app)
-db = SQLAlchemy(app)
-
-from app import views, models, api
+@app.cli.command('initdb')
+def initdb_command():
+    """Initialize the database"""
+    DATA_BASE.create_all()
+    print "database initialized"

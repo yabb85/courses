@@ -1,190 +1,160 @@
 #! /usr/bin/python
 # -*- coding:utf-8 -*-
+"""
+Define all models used by API
+"""
 
-from app import db
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Table
 from sqlalchemy import Column
-from sqlalchemy import Integer, String, Numeric
+from sqlalchemy import Integer
+from sqlalchemy import String
+from sqlalchemy import Boolean
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, backref
-from datetime import datetime
+from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+import uuid
 
 
-class User(db.Model):
-    __tablename__ = "users"
-    id = Column('id', Integer, primary_key=True)
-    username = Column('name', String(15), unique=True)
-    password = Column('password', String(50))
-    email = Column('mail', String(50), unique=True)
+DATA_BASE = SQLAlchemy()
 
-    def __init__(self, username, password, email):
-        self.username = username
+
+# Define Models
+
+ROLES_USERS = Table('roles_users', DATA_BASE.metadata,
+                    Column('users_id', Integer(), ForeignKey('users.id')),
+                    Column('roles_id', Integer(), ForeignKey('roles.id')))
+
+
+BASKETS_USERS = Table('baskets_users', DATA_BASE.metadata,
+                      Column('users_id', Integer(), ForeignKey('users.id')),
+                      Column('baskets_id', Integer(), ForeignKey('baskets.id')))
+
+
+class User(DATA_BASE.Model):
+    """define Users storage format"""
+    __tablename__ = 'users'
+    id = Column(String(35), primary_key=True, unique=True)
+    email = Column(String(255), unique=True)
+    password = Column(String(255))
+    active = Column(Boolean)
+    username = Column(String(15), unique=True)
+    roles = relationship('Role', secondary=ROLES_USERS,
+                         backref=backref('users', lazy='dynamic'))
+    baskets = relationship('Basket', secondary=BASKETS_USERS,
+                           backref=backref('users', lazy='dynamic'))
+
+    def __init__(self, name, password, email):
+        """Create new user in database"""
+        DATA_BASE.Model.__init__(self)
+        self.id = uuid.uuid4().hex
+        self.username = name
         self.password = password
         self.email = email
-        self.registered_on = datetime.utcnow()
 
     def set_password(self, password):
+        """Hash password"""
         self.password = generate_password_hash(password)
 
     def check_password(self, password):
+        """Check password"""
         return check_password_hash(self.password, password)
 
-    def is_authenticated(self):
-        return True
 
-    def is_active(self):
-        return True
+class Role(DATA_BASE.Model):
+    """Define roles storage format"""
+    __tablename__ = 'roles'
+    id = Column(String(35), primary_key=True, unique=True)
+    name = Column(String(80), unique=True)
+    description = Column(String(255))
 
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return unicode(self.id)
-
-    def __repr__(self):
-        return '<User %r>' % self.username
-
-    @property
-    def serialize(self):
-        """docstring for serialize"""
-        return {
-            'id': self.id,
-            'username': self.username
-        }
-
-
-class Liste(db.Model):
-    __tablename__ = "list"
-    id = Column('id', Integer, primary_key=True)
-    name = Column('name', String(50))
-
-    def __init__(self, name):
-        """docstring for __init__"""
+    def __init__(self, name=None, description=None):
+        DATA_BASE.Model.__init__(self)
+        self.id = uuid.uuid4().hex
         self.name = name
-
-    def __repr__(self):
-        """docstring for __repr__"""
-        return '<Liste %r>' % self.name
-
-    @property
-    def serialize(self):
-        """docstring for serialize"""
-        return {
-            'id': self.id,
-            'name': self.name
-        }
+        self.description = description
 
 
-class UserList(db.Model):
+class Order(DATA_BASE.Model):
     """
-    Model to associate user with list
+    List of ordered products
     """
-    __tablename__ = 'user_list'
-    user_id = Column('user_id', Integer, primary_key=True)
-    list_id = Column('list_id', Integer, primary_key=True)
+    __tablename__ = 'orders'
+    id = Column(String(35), primary_key=True, unique=True)
+    baskets_id = Column(Integer(), ForeignKey('baskets.id'), primary_key=True)
+    products_id = Column(Integer(), ForeignKey('products.id'), primary_key=True)
+    quantity = Column(Integer())
 
-    def __init__(self, user_id, list_id):
-        """docstring for __init__"""
-        self.user_id = user_id
-        self.list_id = list_id
+    basket = relationship('Basket',
+                          backref=backref('orders',
+                                          cascade="all, delete-orphan"))
+    product = relationship('Product',
+                           backref=backref('orders',
+                                           cascade="all, delete-orphan"))
 
-    def __repr__(self):
-        """docstring for __repr__"""
-        return '<User List %r %r>' % (self.user_id, self.list_id)
-
-    @property
-    def serialize(self):
-        """docstring for serialize"""
-        return {
-            'user_id': self.user_id,
-            'list_id': self.list_id
-        }
-
-
-class Product(db.Model):
-    __tablename__ = "products"
-    id = Column('id', Integer, primary_key=True)
-    name = Column('name', String(50))
-    price = Column('price', Numeric)
-    quantity = Column('quantity', Integer)
-    unit = Column('unit', String(10))
-    img = Column('img', String(200))
-
-    def __init__(self, name, price, quantity, unit, img):
-        """docstring for __init__"""
-        self.name = name
-        self.price = price
+    def __init__(self, basket=None, product=None, quantity=None):
+        DATA_BASE.Model.__init__(self)
+        self.id = uuid.uuid4().hex
+        self.basket = basket
+        self.product = product
         self.quantity = quantity
-        self.unit = unit
+
+    def __repr__(self):
+        return '<Order {}>'.format(self.basket.name + " " + self.product.name)
+
+
+class Basket(DATA_BASE.Model):
+    """
+    List of basket with description
+    """
+    __tablename__ = "baskets"
+    id = Column(String(35), primary_key=True, unique=True)
+    name = Column(String(50))
+    description = Column(String(255))
+
+    products = relationship("Product", secondary="orders", viewonly=True)
+
+    def __init__(self, name, description):
+        """Initialize a new Basket"""
+        DATA_BASE.Model.__init__(self)
+        self.id = uuid.uuid4().hex
+        self.name = name
+        self.description = description
+
+    def add_product(self, prod, qty):
+        """Add new product in basket"""
+        self.orders.append(Order(basket=self, product=prod, quantity=qty))
+
+    def remove_product(self, prod):
+        """Remove a product of basket"""
+        order = Order.query.filter_by(baskets_id=self.id, products_id=prod.id).first()
+        self.orders.remove(order)
+
+    def __repr__(self):
+        return '<Order {}>'.format(self.name)
+
+
+class Product(DATA_BASE.Model):
+    """
+    Products used by user
+    """
+    __tablename__ = "products"
+    id = Column(String(35), primary_key=True, unique=True)
+    name = Column(String(50))
+    img = Column(String(200))
+
+    baskets = relationship("Basket", secondary="orders", viewonly=True)
+
+    def __init__(self, name, img):
+        """
+        Initialize a new product
+        """
+        DATA_BASE.Model.__init__(self)
+        self.id = uuid.uuid4().hex
+        self.name = name
         self.img = img
 
     def __repr__(self):
-        return '<Product %r %r %r>' % (self.id, self.name, self.price)
-        #return '{id: %r, name: %r, price %r, quantity: %r, unit: %r, img: %r}' \
-            #% (self.id, self.name, self.price, self.quantity, self.unit, self.img)
-
-    @property
-    def serialize(self):
-        """docstring for serialize"""
-        return {
-            'id': self.id,
-            'name': self.name,
-            'price': str(self.price),
-            'quantity': self.quantity,
-            'unit': self.unit,
-            'img': self.img
-        }
-
-
-class ListProduct(db.Model):
-    __tablename__ = "list_product"
-    list_id = Column('list_id', Integer, primary_key=True)
-    product_id = Column('product_id', Integer, primary_key=True)
-    quantity = Column('quantity', Integer)
-
-    def __init__(self, list_id, product_id, quantity):
-        """docstring for __init__"""
-        self.list_id = list_id
-        self.product_id = product_id
-        self.quantity = quantity
-
-    def __repr__(self):
-        """docstring for __repr__"""
-        return '<ListProduct %r %r %r>' % (self.list_id, self.product_id,
-                                           self.quantity)
-        #return '{list_id: %r, product_id: %r, quantity: %r}' % (self.list_id,
-                                                                #self.product_id,
-                                                                #self.quantity)
-
-    @property
-    def serialize(self):
-        """docstring for serialize"""
-        return {
-            'id': self.list_id,
-            'product_id': self.product_id,
-            'quantity': self.quantity
-        }
-
-
-class Friends(db.Model):
-    __tablename__ = "friends"
-    user_id = Column('user_id', Integer, primary_key=True)
-    friend = Column('friend', Integer, primary_key=True)
-    status = Column('status', String(10))
-
-    def __init__(self, user_id, friend):
-        self.user_id = user_id
-        self.friend = friend
-
-    def __repr__(self):
-        """docstring for __repr__"""
-        return '<Friend %r %r>' % (self.user_id, self.friend)
-
-    @property
-    def serialize(self):
-        """docstring for serialize"""
-        return {
-            'user_id': self.user_id,
-            'friend': self.friend
-        }
+        return '<Product {}>'.format(self.name)
