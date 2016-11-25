@@ -10,7 +10,7 @@ from app.models import DATA_BASE
 from app.api import api
 from app.security import security
 from app.views import simple_page
-from app.socketio import socketio
+from app.socketio import SOCKETIO
 
 
 app = Flask(__name__, instance_relative_config=True)
@@ -20,7 +20,7 @@ app.register_blueprint(simple_page)
 DATA_BASE.init_app(app)
 api.init_app(app)
 security.init_app(app)
-socketio.init_app(app)
+SOCKETIO.init_app(app)
 
 
 @app.cli.command('initdb')

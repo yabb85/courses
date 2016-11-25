@@ -5,17 +5,20 @@ Create socketio server
 """
 
 from flask_socketio import SocketIO
+from flask_socketio import join_room
+from flask_socketio import leave_room
 
-socketio = SocketIO()
+SOCKETIO = SocketIO()
 
-@socketio.on('message')
-def handle_message(message):
-    print('received message: ' + message)
 
-@socketio.on('json')
-def handle_json(json):
-    print('received json: ' + str(json))
+@SOCKETIO.on('join')
+def on_join(data):
+    """docstring for on_join"""
+    room = data['room']
+    join_room(room)
 
-@socketio.on('my event')
-def handle_my_custom_event(json):
-    print('received json: ' + str(json))
+@SOCKETIO.on('leave')
+def on_leave(data):
+    """docstring for on_leave"""
+    room = data['room']
+    leave_room(room)

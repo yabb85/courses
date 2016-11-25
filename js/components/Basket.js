@@ -101,8 +101,8 @@ var Actions = {
 				xhr.setRequestHeader('Authorization', "JWT " + localStorage.token);
 			},
 			success: function(data) {
-				_basket.inBasket = data.inBasket
-				Store.emitChange()
+				//_basket.inBasket = data.inBasket
+				//Store.emitChange()
 			},
 			error: function(data) {
 				console.error(data)
@@ -128,14 +128,18 @@ var Actions = {
 				xhr.setRequestHeader('Authorization', "JWT " + localStorage.token);
 			},
 			success: function(data) {
-				_basket.inBasket = data.inBasket
-				Store.emitChange()
+				//_basket.inBasket = data.inBasket
+				//Store.emitChange()
 			},
 			error: function(data) {
 				console.error(data)
 			}
 
 		})
+	},
+	updateBasket: function(data) {
+		_basket = data
+		Store.emitChange()
 	}
 }
 
@@ -253,11 +257,16 @@ var Basket = React.createClass({
 		Actions.loadBasketList()
 		Store.emitChange()
 		socket.on('connect', function() {
-			socket.emit('my event', {data: 'I\'m connected!'});
+			socket.emit('join', {room: _basket.id})
+		})
+		socket.on('update', function(data) {
+			console.log('received')
+			Actions.updateBasket(data)
 		})
 	},
 	componentWillUnmount: function() {
 		Store.removeChangeListener(this._onChange);
+		socket.emit('leave', {room: this.state.id})
 	},
 	render: function() {
 		var createProductItem = function(item) {

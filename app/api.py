@@ -14,6 +14,7 @@ from app.models import DATA_BASE
 from app.models import Basket as db_Basket
 from app.models import Product as db_Product
 from app.security import create_user
+from app.socketio import SOCKETIO
 
 
 api = Api()
@@ -123,14 +124,18 @@ class Basket(Resource):
                 'name': product.name,
                 'quantity': element.quantity
             })
-        return {
+        data = {
             'id': basket_id,
             'name': basket.name,
             'inBasket': products
         }
+        SOCKETIO.emit('update', data, room=basket_id)
+        return data
 
     def delete(self, basket_id):
-        """Remove a product of selected basket"""
+        """
+        Remove a product of selected basket
+        """
         args = self.parser.parse_args()
         basket = db_Basket.query.get(basket_id)
         product = db_Product.query.get(args['id'])
@@ -145,11 +150,13 @@ class Basket(Resource):
                 'name': product.name,
                 'quantity': element.quantity
             })
-        return {
+        data = {
             'id': basket_id,
             'name': basket.name,
             'inBasket': products
         }
+        SOCKETIO.emit('update', data, room=basket_id)
+        return data
 
 
 
