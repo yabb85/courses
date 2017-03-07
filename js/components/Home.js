@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import Auth from '../modules/Auth.js'
 
 var Item = React.createClass({
 	displayName: "Item",
@@ -45,8 +46,12 @@ var Home = React.createClass({
 				xhr.setRequestHeader('Authorization', "JWT " + localStorage.token);
 			},
 			success: function(data) {
-				console.log(data);
 				this.setState(data);
+			}.bind(this),
+			error: function(data) {
+				if (data.status == 401 || data.status == 403) {
+					Auth.logout()
+				}
 			}.bind(this)
 		});
 
@@ -70,11 +75,13 @@ var Home = React.createClass({
 				xhr.setRequestHeader('Authorization', "JWT " + localStorage.token);
 			},
 			success: function(data) {
-				console.log(data)
 				this.setState(data)
 			}.bind(this),
 			error: function(data) {
-			}
+				if (data.status == 401 || data.status == 403) {
+					Auth.logout()
+				}
+			}.bind(this)
 		})
 	},
 	render: function() {

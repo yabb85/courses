@@ -1,3 +1,4 @@
+import { browserHistory } from 'react-router'
 import $ from 'jquery'
 
 module.exports = {
@@ -28,6 +29,7 @@ module.exports = {
     delete localStorage.token
     if (cb) cb()
     this.onChange(false)
+	browserHistory.push('/login')
   },
 
   loggedIn() {

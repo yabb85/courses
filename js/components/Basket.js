@@ -3,6 +3,7 @@ import { Dropdown, DropdownButton, MenuItem, Button } from 'react-bootstrap'
 import EventEmitter from 'events'
 import $ from 'jquery'
 import io from 'socket.io-client'
+import Auth from '../modules/Auth';
 
 
 var socket = io('http://localhost:5000')
@@ -35,7 +36,9 @@ var Actions = {
 				Store.emitChange()
 			},
 			error: function(data) {
-				console.error(data)
+				if (data.status == 401 || data.status == 403) {
+					Auth.logout()
+				}
 			}
 		});
 	},
@@ -56,7 +59,9 @@ var Actions = {
 				Store.emitChange()
 			},
 			error: function(data) {
-				console.error(data)
+				if (data.status == 401 || data.status == 403) {
+					Auth.logout()
+				}
 			}
 		});
 	},
@@ -79,7 +84,9 @@ var Actions = {
 				Store.emitChange()
 			},
 			error: function(data) {
-				console.error(data)
+				if (data.status == 401 || data.status == 403) {
+					Auth.logout()
+				}
 			}
 		})
 	},
@@ -105,7 +112,9 @@ var Actions = {
 				//Store.emitChange()
 			},
 			error: function(data) {
-				console.error(data)
+				if (data.status == 401 || data.status == 403) {
+					Auth.logout()
+				}
 			}
 
 		})
@@ -132,7 +141,9 @@ var Actions = {
 				//Store.emitChange()
 			},
 			error: function(data) {
-				console.error(data)
+				if (data.status == 401 || data.status == 403) {
+					Auth.logout()
+				}
 			}
 
 		})
@@ -260,7 +271,6 @@ var Basket = React.createClass({
 			socket.emit('join', {room: _basket.id})
 		})
 		socket.on('update', function(data) {
-			console.log('received')
 			Actions.updateBasket(data)
 		})
 	},
